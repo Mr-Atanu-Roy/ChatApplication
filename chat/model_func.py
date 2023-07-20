@@ -1,4 +1,4 @@
-from chat.models import Group
+from chat.models import Group, ChatMessages
 
 #func to get user group
 def get_user_group(user):
@@ -29,3 +29,12 @@ def get_user_group(user):
             group.append(data)
 
     return group, group_len
+
+
+#get group messages of group(=Group model instance)
+def get_group_messages(group):
+    group_msg = ChatMessages.objects.filter(group=group)
+    if len(group_msg) == 0:
+        group_msg = None
+
+    return group_msg

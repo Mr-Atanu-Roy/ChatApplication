@@ -6,8 +6,10 @@ from django.http import HttpResponse
 from accounts.models import User
 from chat.models import Group, ChatMessages
 
-from accounts.model_func import get_user_contacts
 from accounts.utils import check_str_special
+from accounts.model_func import get_user_contacts
+
+from chat.model_func import get_group_messages
 
 # Create your views here.
 
@@ -132,9 +134,7 @@ def chat_group(request, id):
             return HttpResponse("<h3>INVALID GROUP</h3>")
         
         #get group messages
-        group_msg = ChatMessages.objects.filter(group=group)
-        if len(group_msg) == 0:
-            group_msg = None
+        group_msg = get_group_messages(group)
 
         
     except Exception as e:

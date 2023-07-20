@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
 from django.contrib import messages
 
-from accounts.models import User, UserContacts
+from accounts.models import User
 from accounts.utils import current_time, check_str_special, validate_email
 from accounts.model_func import get_user_contacts
 
