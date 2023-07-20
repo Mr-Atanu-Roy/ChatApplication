@@ -1,0 +1,13 @@
+{% extends "../blocks/chat_base.html" %}
+
+{% load static %}
+
+{% block title %}WhatsApp | Start Chatting and Connect With People{% endblock title %}
+
+{% block body %}
+  <div class="overflow-y-hidden h-screen w-full bg-gray-800">
+    <div class="flex flex-col items-center justify-center">
+        <img src="{% static 'images/vectors/texting-bro.png' %}" alt="start chatting" class="h-screen" loading="lazy">
+    </div>
+  </div>
+{% endblock body %}

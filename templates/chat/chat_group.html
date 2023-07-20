@@ -1,0 +1,82 @@
+{% extends "../blocks/chat_base.html" %}
+
+{% load static %}
+
+{% block title %}{{group.name}} | WhatsApp{% endblock title %}
+
+{% block body %}
+
+
+<div class="w-full fixed flex items-center bg-dark p-3 py-2 top-0 shadow-md z-40">
+    <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center"
+        style="background-image: url('/media/{{group.group_pic}}');"></div>
+    <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
+        <p class="font-bold text-lg">{{group.name}}</p>
+        <p class="font-bold text-xs text-gray-500">
+            {% for contact in group.members.all %}
+              {{contact.first_name}},
+            {% endfor %}
+        </p>
+    </div>
+</div>
+
+
+<div class="pb-20 pt-24 bg-slate-900 w-full h-screen overflow-y-auto p-6 bg-cover bg-no-repeat bg-center" style="background-image: url('{% static '/images/bg/chat-bg.png' %}');">
+    <div class="mb-20 flex items-center justify-center w-full">
+        <div class="text-xs text-center text-white py-3 px-4 w-2/5 rounded-lg shadow-lg font-bold" style="backdrop-filter: blur(8px) saturate(100%); box-shadow: 0px 5px 30px 0 rgba( 31, 38, 135, 0.37 );">
+            <i class="fa fa-lock mr-3"></i> <span> {% if group.owner == request.user%} You {% else %} {{group.owner}} {% endif %} created this group on {{group.created_at}}</span>
+        </div>
+    </div>
+
+    <div id="group-chat-msg">
+    {% if group_msg != None %}
+        {% for msg in group_msg %}
+        <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
+            <div class="flex flex-col">
+                {% if msg.sender != request.user %}
+                <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}"
+                    style="background-image: url('/media/{{msg.sender.profile_pic}}');">
+                    {% if msg.sender.profile_pic == '' %} {{msg.sender.first_name|slice:":1"}} {% endif %}
+                </div>
+                {% endif %}
+                <div class="max-w-md py-2 my-1 px-3 text-white bg-green-0 w-fit rounded-lg {% if msg.sender == request.user %}rounded-tr-none{% else %}rounded-tl-none{% endif %}">
+                    <div class="flex items-center justify-between text-slate-900 font-bold mb-1.5 text-xs">
+                        {% if msg.sender == request.user %}
+                        <p class="mr-14">you</p>
+                        {% else %}
+                        <p class="mr-14">{{msg.sender.first_name}}</p>
+                        <p>{{msg.sender.phone}}</p>
+                        {% endif %}
+                    </div>
+                    <p>{{msg.message}}</p>
+                </div>
+                <p class="text-gray-300 text-xs text-right">{{msg.updated_at}}</p>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+    <div id="end"></div>
+</div>
+
+<form class="text-white w-full fixed bg-dark p-2.5 bottom-0 z-50" id="send-msg-form">
+    <input name="input-message" id="input-message" type="text"
+        class="tracking-wide w-9/12 bg-dark mx-auto h-12 border-0 outline-none rounded-md text-white"
+        autocomplete="off" placeholder="Type a message">
+
+    <button type="submit" class="fixed cursor-pointer right-6 bottom-3 bg-green-0 hover:bg-green-0-dark transition-colors rounded py-1.5 px-4"
+        id="send-msg-btn">
+        <i class="fa fa-paper-plane p-color text-xl"></i>
+    </button>
+</form>
+
+{% endblock body %}
+
+{% block scripts %}
+{{group.id|json_script:"group_name"}}
+{{request.user.phone|json_script:"current_user_phone"}}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/group_chat.js' %}"></script>
+{% endblock scripts %}

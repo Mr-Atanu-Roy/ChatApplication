@@ -1,0 +1,72 @@
+{% extends "../blocks/chat_base.html" %}
+
+{% load static %}
+
+{% block title %}Profile|WhatsApp{% endblock title %}
+
+
+{% block body %}
+
+<div class="bg-slate-900 w-full py-10 h-screen overflow-y-auto flex items-center justify-center">
+    <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data" class="bg-dark rounded-lg shadow-lg p-10 w-1/2 my-auto">
+        {% csrf_token %}
+        <div class="flex items-center justify-between">
+            <div>
+                <label for="profile_pic" class="flex flex-col items-center justify-center">
+                    <div id="profile-pic-box" class="border-green-0 border-[3.2px] border-solid cursor-pointer overflow-hidden w-28 h-28 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center" {% if user.profile_pic != '' %} style="background-image: url('/media/{{user.profile_pic}}');" {% endif %}>
+                        <span id="profile-pic-letter" class="{% if user.profile_pic != '' %} hidden {% endif %} text-5xl text-white font-bold uppercase">{{user.first_name | slice:":1"}}</span>
+                    </div>
+                    {% if user.profile_pic != "" %} <label for="remove-pic" class="cursor-pointer text-sm text-green-0 hover:text-green-0-dark transition-colors mt-1">Remove Picture</label>
+                    <input type="checkbox" class="hidden" id="remove-pic" name="remove-pic"> {% endif %}
+                    {% if user.profile_pic == "" %} <label for="profile_pic" class="mt-1 text-sm text-green-0 cursor-pointer">Add Picture</label> {% endif %}
+                </label>
+                <input type="file" name="profile_pic" id="profile_pic" class="hidden">
+            </div>
+            <div class="flex flex-col items-end justify-center font-bold">
+                <div class="text-xl">
+                    <span class="text-green-0">{{request.user.phone}} <i class="fa fa-phone scale-x-[-1]"></i></span>
+                </div>
+                <div>
+                    <p class="mt-3.5 mb-0.5 text-white text-right hover:text-green-0 transition-colors text-sm"><a href="{% url 'contacts' %}">View Contacts</a></p>
+                    <p class="text-white text-right hover:text-green-0 transition-colors text-sm"><a href="">Change Password</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mt-5">
+            <div class="my-2.5 flex flex-col">
+                <label for="first_name" class="mb-1.5 capitalize font-medium text-green-0">first name</label>
+                <input type="text" id="first_name" name="first_name"
+                    class="w-full h-10 border-b-2 border-green-0 outline-none bg-gray-700 text-white p-1 shadow-sm"
+                    placeholder="example: Jhon" value="{{user.first_name}}">
+            </div>
+            <div class="my-2.5 flex flex-col">
+                <label for="last_name" class="mb-1.5 capitalize font-medium text-green-0">last name</label>
+                <input type="text" id="last_name" name="last_name"
+                    class="w-full h-10 border-b-2 border-green-0 outline-none bg-gray-700 text-white p-1 shadow-sm"
+                    placeholder="example: Doe" value="{{user.last_name}}">
+            </div>
+        </div>
+        <div class="grid grid-cols-1 gap-4">
+            <div class="my-2.5 flex flex-col">
+                <label for="email" class="mb-1.5 capitalize font-medium text-green-0">Email <span
+                        class="text-xs normal-case">(your email won't be shared)</span></label>
+                <input type="text" id="email" name="email"
+                    class="w-full h-10 border-b-2 border-green-0 outline-none bg-gray-700 text-white p-1 shadow-sm"
+                    placeholder="example: example@example.com" value="{{user.email}}">
+            </div>
+        </div>
+        <button type="submit"
+            class="mt-6 w-full text-white rounded bg-green-0 py-3 px-4 font-bold uppercase transition-colors duration-300 hover:bg-green-0-dark">Update
+            Profile <i class="fa fa-long-arrow-right ml-3" aria-hidden="true"></i></button>
+    </form>
+</div>
+
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock scripts %}
