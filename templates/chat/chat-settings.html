@@ -1,0 +1,137 @@
+{% extends "../blocks/chat_base.html" %}
+
+{% load static %}
+
+{% block title %}Group Settings | WhatsApp{% endblock title %}
+
+
+{% block body %}
+
+<div class="bg-slate-900 w-full h-screen flex items-center justify-center overflow-y-auto py-10">
+    <form {% if request.user == group.owner %}method="post" action=""{%endif%} id="create-group-form" class="w-full mx-3.5 sm:mx-24 md:w-3/4 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 lg:w-1/2 my-auto overflow-y-auto" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <h3 class="text-2xl text-white font-bold mb-8">Group Settings</h3>
+        <div>
+            <div>
+                <label for="group_pic" class="flex flex-col items-center justify-center">
+                    <div id="profile-pic-box" class="border-green-0 border-[3px] border-solid cursor-pointer overflow-hidden w-32 h-32 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center" style="background-image: url('/media/{{group.group_pic}}');">
+                    </div>
+                    {% if request.user == group.owner %}
+                    <p class="cursor-pointer text-sm text-green-0 hover:text-green-0-dark transition-colors mt-1">Change Picture</p>
+                    {%endif%} 
+                </label>
+                {% if request.user == group.owner %}
+                <input type="file" name="group_pic" id="group_pic" class="hidden">
+                {% endif %}
+            </div>
+
+            <div class="px-3 my-6 flex items-end justify-evenly">
+                <div class="text-center">
+                    <div class="text-white text-xl col-span-1 overflow-hidden w-8 h-8 mb-1.5 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if group.owner.profile_pic == '' %} border-green-0 border-[2px] border-solid {% endif %}" {% if group.owner.profile_pic != '' %} style="background-image: url('/media/{{group.owner.profile_pic}}');" {% endif %}>
+                        {% if group.owner.profile_pic == '' %} {{group.owner.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    <p class="text-green-0 capitalize text-xs">Owner</p>
+                </div>	
+                <div class="text-center max-w-[135px]">
+                    <i class="fa fa-clock-o text-xl text-red-600 mb-1.5"></i>
+                    <p class="text-green-0 capitalize text-xs">Created: {{group.created_at}}</p>
+                </div>	
+                <div class="text-center cursor-pointer" id="exit-group">
+                    <i class="fa fa-sign-out text-xl text-red-600 mb-1.5"></i>
+                    <p class="text-green-0 capitalize text-xs">Exit Group</p>
+                </div>	
+                {% if request.user == group.owner %}
+                <div class="text-center cursor-pointer" id="delete-group">
+                    <i class="fa fa-trash-o text-xl text-red-600 mb-1.5"></i>
+                    <p class="text-green-0 capitalize text-xs">Delete Group</p>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if request.user == group.owner %}
+            <div class="my-2.5 flex flex-col">
+                <label for="group_name" class="mb-1.5 capitalize font-medium text-green-0 text-sm">group name</label>
+                <input type="text" id="group_name" name="group_name"
+                    class="w-full h-10 border-b-2 border-green-0 outline-none bg-gray-700 text-white p-1 shadow-sm"
+                    placeholder="example: Friend For Ever" value="{{group.name}}">
+            </div>
+            <div class="my-3 flex flex-col">
+                <label for="group_desc" class="mb-1.5 capitalize font-medium text-green-0 text-sm">group description</label>
+                <input type="text" id="group_desc" name="group_desc"
+                    class="w-full h-10 border-b-2 border-green-0 outline-none bg-gray-700 text-white p-1 shadow-sm"
+                    placeholder="add description for your group" value="{{group.description}}">
+            </div>
+            {% else %}
+            <div class="mb-5 mt-6 flex flex-col">
+                <p class="mb-1.5 capitalize font-medium text-green-0 text-sm">group name</p>
+                <p class="text-white text-base">{{group.name}}</p>
+            </div>
+            <div class="mb-5 flex flex-col">
+                <p class="mb-1.5 capitalize font-medium text-green-0 text-sm">group description</p>
+                <p class="text-white text-base">{{group.description}}</p>
+            </div>
+            
+            {% endif %}
+ 
+
+            {% if request.user == group.owner %}
+                <button type="submit" id="create-group-btn"
+                class="mt-3 w-full text-white rounded bg-green-0 py-3 px-4 font-bold uppercase transition-colors duration-300 hover:bg-green-0-dark">Make Changes <i class="fa fa-long-arrow-right ml-3" aria-hidden="true"></i></button>
+            {% endif %}
+        </div>
+
+        <h3 class="mt-8 text-white font-bold mb-3.5 capitalize">Group Members</h3>
+
+        <div class="mt-5 max-h-[17rem] overflow-x-hidden overflow-y-auto">
+            {% if request.user == group.owner %}
+            
+            {% for contact in contacts %}
+            
+            <div class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" id="user-search-contact-box">
+                <label data-ripple-dark="true" for="{{contact.phone}}" class="grid grid-cols-6 place-items-center">
+                    <div class="text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if contact.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if contact.profile_pic != '' %} style="background-image: url('/media/{{contact.profile_pic}}');" {% endif %}>
+                        {% if contact.profile_pic == '' %} {{contact.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
+                        <p class="font-bold text-lg">{{contact.first_name}} {{contact.last_name}}</p>
+                        <p class="font-bold text-xs text-gray-400" id="user-search-contact-phone">{{contact.phone}}</p>
+                    </div>
+                </label>
+
+                <input value="{{contact.phone}}" name="phone_checkbox" type="checkbox" class="phone-checkbox rounded-full h-6 w-6 border-2 border-green-0-dark before:content[''] peer relative cursor-pointer appearance-none border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-0 checked:bg-green-0 checked:before:bg-green-0 hover:before:opacity-10" id="{{contact.phone}}" {% if contact in group.members.all %} checked {% endif %}>
+                
+            </div>
+            {% endfor %}
+
+            {% else %}
+            {% for member in group.members.all %}
+            <div class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" {% if member not in contacts and member != request.user %} id="add-contact-btn" data-phone="{{member.phone}}" {% endif %}>
+                <div class="grid grid-cols-6 place-items-center">
+                    <div class="text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if member.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if member.profile_pic != '' %} style="background-image: url('/media/{{member.profile_pic}}');" {% endif %}>
+                        {% if member.profile_pic == '' %} {{member.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    <div class="ml-5 col-span-5 w-full overflow-hidden text-white">
+                        <p class="font-bold text-lg">{{member.first_name}} {{member.last_name}}</p>
+                        <p class="font-bold text-xs text-gray-400">
+                            {{member.phone}} 
+                            {% if member not in contacts and member != request.user %}
+                              is not in your contact. Click to add
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+
+{% endblock body %}
+
+{% block scripts %}
+{{group.id|json_script:"group_id"}}
+<script src="{% static 'js/chat_settings.js' %}"></script>
+{% endblock scripts %}

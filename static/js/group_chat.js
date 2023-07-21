@@ -112,9 +112,20 @@ $(document).ready(function () {
         <div class="flex flex-col">`;
         if (PHONE != phone) {
           content += `
-              <div class="w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center"
-                style="background-image: url('${user_pic}');"></div>
-              `;
+              <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `; 
+              if(user_pic == "/media/"){
+                content += `border-green-0 border-[2.2px] border-solid `;
+              }
+              content +=`"`;
+              if(user_pic != "/media/"){
+                content += `style="background-image: url('${user_pic}');"`;
+              }
+              content += `>`;
+              if(user_pic == "/media/"){
+                content += `${name[0]}`;
+              }
+              
+              content += `</div>`;
         }
         content += `<div class="max-w-md py-2 my-1 px-3 text-white bg-green-0 w-fit rounded-lg `;
         if (PHONE == phone) {

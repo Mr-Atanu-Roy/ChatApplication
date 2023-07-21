@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -184,7 +183,7 @@ def search_chats(request):
                 error = "invalid group name"
         else:
             status = 405
-            error = "only POST method is allowed"
+            error = "only GET method is allowed"
 
     except Exception as e:
         print(e)
@@ -197,6 +196,118 @@ def search_chats(request):
     return JsonResponse(response, safe=False)
 
 
+@login_required(login_url="/auth/login")
+def exit_group(request):
+    '''
+    handel group exit of current user
+    '''
+    
+    response = {}
+    status = 0,
+    message = "",
+    error = "no data"
 
+    try:
+        if request.method == "GET":
+            #get the group_id
+            group_id = request.GET.get("group_id")
+
+            group = Group.objects.filter(id=group_id).first()
+            #check if group exists
+            if group is not None:
+                #check if user is part of the group
+                if request.user in group.members.all():
+                    try:
+                        #check if user is owner
+                        if group.owner == request.user:
+                            #make some one else the owner
+                            group.owner = group.members.exclude(id=request.user.id).first()
+                            group.save()
+
+                        #remove the user from group
+                        group.members.remove(request.user)
+
+                        
+                        status = 201
+                        error = None
+                        message = "user removed"
+                    except Exception as e:
+                        print(e)
+                        status = 500
+                        error = "something went wrong"
+                else:
+                    status = 401
+                    error = "invalid user"
+
+            else:
+                status = 400
+                error = "invalid group name"
+        else:
+            status = 405
+            error = "only GET method is allowed"
+
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["message"] = message
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
+
+
+
+@login_required(login_url="/auth/login")
+def delete_group(request):
+    '''
+    handel deletion of group if user is owner
+    '''
+    
+    response = {}
+    status = 0,
+    message = "",
+    error = "no data"
+
+    try:
+        if request.method == "GET":
+            #get the group_id
+            group_id = request.GET.get("group_id")
+
+            group = Group.objects.filter(id=group_id).first()
+            #check if group exists
+            if group is not None:
+                #check if user is group owner
+                if group.owner == request.user:
+                    try:
+                        #delete the group
+                        group.delete()
+                        
+                        status = 201
+                        error = None
+                        message = "group deleted"
+                    except Exception as e:
+                        status = 500
+                        error = "something went wrong"
+                else:
+                    status = 401
+                    error = "you are not group owner"
+
+            else:
+                status = 400
+                error = "invalid group name"
+        else:
+            status = 405
+            error = "only GET method is allowed"
+
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["message"] = message
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
 
 

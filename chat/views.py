@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 
 from accounts.models import User
-from chat.models import Group, ChatMessages
+from chat.models import Group
 
 from accounts.utils import check_str_special
 from accounts.model_func import get_user_contacts
@@ -144,6 +144,7 @@ def chat_group(request, id):
     return render(request, 'chat/chat_group.html', context)
 
 
+
 @login_required(login_url="/auth/login")
 def chat_group_settings(request, id):
     '''
@@ -151,11 +152,22 @@ def chat_group_settings(request, id):
     '''
 
     context = {}
+    group = contacts = None
 
     try:
-        pass
+        #get the group instance from id
+        group = Group.objects.filter(id=id).first()
+        #get user contacts
+        contacts = get_user_contacts(request.user)
+
+        #check if group exists and user is a part of it
+        if not group or request.user not in group.members.all():
+            return HttpResponse("<h3>INVALID GROUP</h3>")
+        
     except Exception as e:
         print(e)
         pass
 
+    context["group"] = group
+    context["contacts"] = contacts
     return render(request, 'chat/chat-settings.html', context)
