@@ -6,20 +6,18 @@
 
 {% block body %}
 
-
-<div class="w-full fixed flex items-center bg-dark p-3 py-2 top-0 shadow-md z-40">
-    <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center"
-        style="background-image: url('/media/{{group.group_pic}}');"></div>
-    <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
-        <p class="font-bold text-lg">{{group.name}}</p>
-        <p class="font-bold text-xs text-gray-500">
-            {% for contact in group.members.all %}
-              {{contact.first_name}},
-            {% endfor %}
-        </p>
+<a href="/settings/group/{{group.id}}">
+    <div class="w-full fixed flex items-center bg-dark transition-colors p-3 py-2 top-0 shadow-md z-40">
+        <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center"
+            style="background-image: url('/media/{{group.group_pic}}');"></div>
+        <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
+            <p class="font-bold text-lg">{{group.name}}</p>
+            <p class="font-bold text-xs text-gray-500" id="online-users">
+                {{group.description}}
+            </p>
+        </div>
     </div>
-</div>
-
+</a>
 
 <div class="pb-20 pt-24 bg-slate-900 w-full h-screen overflow-y-auto p-6 bg-cover bg-no-repeat bg-center" style="background-image: url('{% static '/images/bg/chat-bg.png' %}');">
     <div class="mb-20 flex items-center justify-center w-full">
@@ -34,8 +32,8 @@
         <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
             <div class="flex flex-col">
                 {% if msg.sender != request.user %}
-                <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}"
-                    style="background-image: url('/media/{{msg.sender.profile_pic}}');">
+                <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}" {% if msg.sender.profile_pic != '' %}
+                    style="background-image: url('/media/{{msg.sender.profile_pic}}');" {% endif %}>
                     {% if msg.sender.profile_pic == '' %} {{msg.sender.first_name|slice:":1"}} {% endif %}
                 </div>
                 {% endif %}

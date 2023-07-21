@@ -115,8 +115,6 @@ def new_chat_group(request):
     
 
 
-
-
 @login_required(login_url="/auth/login")
 def chat_group(request, id):
     '''
@@ -146,4 +144,18 @@ def chat_group(request, id):
     return render(request, 'chat/chat_group.html', context)
 
 
+@login_required(login_url="/auth/login")
+def chat_group_settings(request, id):
+    '''
+    Handel the chat group settings page
+    '''
 
+    context = {}
+
+    try:
+        pass
+    except Exception as e:
+        print(e)
+        pass
+
+    return render(request, 'chat/chat-settings.html', context)
