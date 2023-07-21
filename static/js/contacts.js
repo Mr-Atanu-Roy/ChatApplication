@@ -7,7 +7,7 @@ $(document).ready(function () {
       let phone = $("#phone").val();
       $.ajax({
         type: "post",
-        url: "/api/search_contact_ajax/",
+        url: "/api/search_contact/",
         data: {
           phone: phone,
         },
@@ -20,8 +20,15 @@ $(document).ready(function () {
           if (error == null && status == 200) {
             content = `
                 <div class="py-2.5 px-2 grid grid-cols-6 place-items-center hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" id="user-search-contact-box">
-                    <div class="col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center"
-                        style="background-image: url('${data["profile_pic"]}');"></div>
+                    <div class="text-white text-3xl from-bold col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center `;
+                    if (data["profile_pic"] == null) {
+                      content += `border-green-0 border-[2.6px] border-solid`;
+                    }
+                    content += `" style="background-image: url('${data["profile_pic"]}');">`;
+                        if (data["profile_pic"] == null) {
+                          content += `<span class="uppercase">${data["name"][0]}</span>`;
+                        }
+                    content += `</div>
                     <div class="ml-2.5 col-span-5 w-full overflow-hidden text-white">
                         <p class="font-bold text-lg">${data["name"]}</p>
                         <p class="font-bold text-xs text-gray-400" id="user-search-contact-phone">${data["phone"]}</p>
@@ -45,7 +52,7 @@ $(document).ready(function () {
         let user_phone = $("#user-search-contact-phone").html();
         $.ajax({
           type: "post",
-          url: "/api/add_to_user_contact/",
+          url: "/api/add_to_contact/",
           data: {
             phone: user_phone,
           },

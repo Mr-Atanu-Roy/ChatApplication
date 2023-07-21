@@ -9,7 +9,11 @@ from chat.models import Group
 # Create your views here.
 
 @csrf_exempt
-def search_contact_ajax(request):
+def search_contact(request):
+    '''
+    Handel the dynamic searching of contacts on contact page
+    '''
+
     response = {}
     status = 0,
     data = None,
@@ -30,10 +34,14 @@ def search_contact_ajax(request):
                         status = 404
                         error = "this phone number does not have whatsapp account"
                     else:
+                        profile_pic = None
+                        if user.profile_pic != "":
+                            profile_pic = f"/media/{user.profile_pic}"
+                        
                         data = {
                             "name": user.first_name+" "+user.last_name,
                             "phone": user.phone,
-                            "profile_pic": f"/media/{user.profile_pic}"
+                            "profile_pic": profile_pic
                         }
                         status = 200
                         error = None
@@ -62,7 +70,12 @@ def search_contact_ajax(request):
 
 
 @csrf_exempt
-def add_to_user_contact(request):
+def add_to_contact(request):
+    '''
+    Handel the addition of contact to user account
+    '''
+
+
     response = {}
     status = 0,
     message = None,
@@ -119,6 +132,7 @@ def add_to_user_contact(request):
     response["error"] = error
 
     return JsonResponse(response, safe=False)
+
 
 
 
