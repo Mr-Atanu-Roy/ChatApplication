@@ -38,12 +38,14 @@
                         <a href="{% url 'logout' %}" class="ml-4 text-xl hover:text-green-0 transition-colors"><i class="fa fa-sign-out"></i></a>
                     </div>
                 </div>
+
                 <div class="mx-1.5 my-3 md:px-3.5">
-                    <input name="message" id="message" type="text"
+                    <input name="search-chats" id="search-chats" type="text"
                         class="tracking-wide w-full bg-gray-700 mx-auto h-10 px-2 border-0 outline-none rounded text-white border-b-2 border-white"
                         autocomplete="off" placeholder="Search for contact">
                 </div>
                 
+                <div id="chat-records">
                 {% if group_len > 0 %}
 
                 {% for group in groups %}
@@ -71,6 +73,7 @@
                 </div>
                 
                 {% endif %}
+                </div>
             </div>
 
             <div class="{% if request.path == '/' %}hidden lg:block lg:col-span-5 {% else %}col-span-7 lg:col-span-5 {% endif %}">
@@ -81,6 +84,10 @@
 
     {% include './dismissible_alert.html' %}
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+    integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'js/search_chats.js' %}"></script>
     {% block scripts %}{% endblock scripts %}
 </body>
 

@@ -1,13 +1,18 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from accounts.models import User, UserContacts
 from chat.models import Group
 
+from accounts.utils import check_str_special
+from chat.model_func import get_user_chats
+
 
 # Create your views here.
 
+@login_required(login_url="/auth/login")
 @csrf_exempt
 def search_contact(request):
     '''
@@ -69,6 +74,7 @@ def search_contact(request):
 
 
 
+@login_required(login_url="/auth/login")
 @csrf_exempt
 def add_to_contact(request):
     '''
@@ -134,7 +140,61 @@ def add_to_contact(request):
     return JsonResponse(response, safe=False)
 
 
+@login_required(login_url="/auth/login")
+def search_chats(request):
+    '''
+    Handel dynamic chat searching on chat nav bar
+    '''
 
+    response = {}
+    status = 0,
+    data = None,
+    error = "no data"
+
+    try:
+        if request.method == "GET":
+            #get the search query
+            query = request.GET.get("query")
+
+            #check if query is valid char
+            if not check_str_special(query):
+                chats = get_user_chats(request.user, query)
+
+                #check if any chat is found
+                if chats is not None:
+                    data = []
+
+                    #iterate over each item and add to data as dict
+                    for chat in chats:
+                        data.append({
+                            "url": f"/chat/{chat.type}/{chat.id}",
+                            "name": chat.name,
+                            "desc": chat.description,
+                            "chat_pic": f"/media/{chat.group_pic}",
+                        })
+
+                    status = 200
+                    error = None
+                else:
+                    status = 204
+                    error = "nothing found"
+
+            else:
+                status = 400
+                error = "invalid group name"
+        else:
+            status = 405
+            error = "only POST method is allowed"
+
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["data"] = data
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
 
 
 

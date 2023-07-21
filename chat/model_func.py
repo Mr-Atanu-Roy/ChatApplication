@@ -31,10 +31,27 @@ def get_user_group(user):
     return group, group_len
 
 
-#get group messages of group(=Group model instance)
+#func to get group messages of group(=Group model instance)
 def get_group_messages(group):
     group_msg = ChatMessages.objects.filter(group=group)
     if len(group_msg) == 0:
         group_msg = None
 
     return group_msg
+
+
+#func to get user chats: PERSONAL & GROUP based on group name
+def get_user_chats(user, group_name=""):
+
+    try:
+        chat_groups = Group.objects.filter(members__in=[user], name__icontains=group_name)
+        if len(chat_groups) < 1:
+            return None
+    except Exception as e:
+        return None
+
+
+    return chat_groups
+
+
+
