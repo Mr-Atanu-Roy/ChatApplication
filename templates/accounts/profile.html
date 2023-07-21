@@ -8,7 +8,7 @@
 {% block body %}
 
 <div class="bg-slate-900 w-full py-10 h-screen overflow-y-auto flex items-center justify-center">
-    <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data" class="bg-dark rounded-lg shadow-lg p-10 w-1/2 my-auto">
+    <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data" class="w-full mx-3.5 sm:mx-24 md:w-3/4 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 lg:w-1/2 my-auto">
         {% csrf_token %}
         <div class="flex items-center justify-between">
             <div>

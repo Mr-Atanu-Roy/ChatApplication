@@ -25,7 +25,8 @@
 <body>
     <section class="w-full h-screen bg-dark">
         <div class="grid grid-cols-7 w-full h-screen">
-            <div class="col-span-2 overflow-y-auto shadow-lg px-3">
+            
+            <div class="overflow-y-auto shadow-lg px-3 {% if request.path == '/' %}col-span-7 lg:col-span-2{% else %}hidden lg:block lg:col-span-2{% endif %}">
                 <div class="w-full px-3 py-4 flex items-center justify-between">
                     <p class="text-white font-bold tracking-wide text-2xl"><a href="{% url 'home' %}">Chats</a></p>
                     <div class="flex text-white text-lg">
@@ -37,7 +38,7 @@
                         <a href="{% url 'logout' %}" class="ml-4 text-xl hover:text-green-0 transition-colors"><i class="fa fa-sign-out"></i></a>
                     </div>
                 </div>
-                <div class="my-3 px-3.5">
+                <div class="mx-1.5 my-3 md:px-3.5">
                     <input name="message" id="message" type="text"
                         class="tracking-wide w-full bg-gray-700 mx-auto h-10 px-2 border-0 outline-none rounded text-white border-b-2 border-white"
                         autocomplete="off" placeholder="Search for contact">
@@ -47,10 +48,10 @@
 
                 {% for group in groups %}
                 <a href="{{group.link}}"
-                    class="p-3 grid grid-cols-6 place-items-center hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
+                    class="mx-1.5 md:mx-3.5 lg:mx-0 p-3 grid grid-cols-6 place-items-center hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
                     <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center"
                         style="background-image: url('/media/{{group.group_pic}}');"></div>
-                    <div class="ml-2.5 col-span-5 w-full overflow-hidden text-white">
+                    <div class="ml-3.5 lg:ml-3 col-span-5 w-full overflow-hidden text-white pl-3.5 lg:pl-5 2xl:p-0">
                         <p class="font-bold text-lg">{{group.name}}</p>
                         <p class="font-bold text-xs text-gray-400">{{group.desc}}</p>
                     </div>
@@ -72,7 +73,7 @@
                 {% endif %}
             </div>
 
-            <div class="col-span-5 ">
+            <div class="{% if request.path == '/' %}hidden lg:block lg:col-span-5 {% else %}col-span-7 lg:col-span-5 {% endif %}">
                 {% block body %} {% endblock body %}
             </div>
         </div>
