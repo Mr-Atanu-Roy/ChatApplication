@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from accounts.utils import BaseModel
+from accounts.utils import BaseModel, cache_delete
 from accounts.manager import Usermanager
 
 import uuid
@@ -48,18 +48,5 @@ class UserContacts(BaseModel):
     class Meta:
         verbose_name_plural = "User Contacts"
         ordering = ['created_at']
-
-
-
-@receiver(post_save, sender=User)
-def User_created_handler(sender, instance, created, *args, **kwargs):
-    '''
-    This signal will be executed each time a new user is created. It will add a UserContacts instance
-    '''
-
-    #execute only if db record is created
-    if created:    
-        user_contact = UserContacts(user=instance)
-        user_contact.save()
 
 

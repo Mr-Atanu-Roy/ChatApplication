@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from accounts.models import User
 from chat.models import Group
 
-from accounts.utils import check_str_special
+from accounts.utils import check_str_special, cache_get, cache_set
 from accounts.model_func import get_user_contacts
 
 from chat.model_func import get_group_messages
@@ -131,8 +131,17 @@ def chat_group(request, id):
         if not group or request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
         
-        #get group messages
-        group_msg = get_group_messages(group)
+        key = f"{group.id}_chat_messages"
+        cached_data = cache_get(key)
+        #check if cached data exists
+        if cached_data:
+            group_msg = cached_data
+        else:
+            #get group messages
+            group_msg = get_group_messages(group)
+
+            #set cache
+            cache_set(key, group_msg)
 
         
     except Exception as e:
@@ -171,3 +180,4 @@ def chat_group_settings(request, id):
     context["group"] = group
     context["contacts"] = contacts
     return render(request, 'chat/chat-settings.html', context)
+

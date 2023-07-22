@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     #third-party
     'channels',
+    "debug_toolbar",
 
     #own
     'accounts',
@@ -61,6 +62,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "WhatsApp.urls"
@@ -170,4 +173,23 @@ CHANNEL_LAYERS = {
 }
 
 
+#redis caching
+
+CACHE_TTL = 60*60*2 #TTL for 2hr
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "whatsapp"
+    }
+}
+
+
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 

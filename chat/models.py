@@ -3,9 +3,6 @@ from django.db import models
 from accounts.models import User
 from accounts.utils import BaseModel
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 # Create your models here.
 
 class Group(BaseModel):
@@ -36,5 +33,6 @@ class ChatMessages(BaseModel):
 
     def __str__(self):
         return str(self.sender)
+
 
 

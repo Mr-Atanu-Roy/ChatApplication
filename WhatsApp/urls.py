@@ -25,6 +25,8 @@ urlpatterns = [
     path("auth/", include('accounts.urls')),
     path("api/", include('api.urls')),
     path("", include('chat.urls')),
+    
+    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 if settings.DEBUG:
