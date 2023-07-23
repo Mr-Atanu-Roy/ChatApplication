@@ -5,13 +5,13 @@
 {% block title %}Start Chatting and Connect With People | Conversat{% endblock title %}
 
 {% block body %}
-  <div class="overflow-y-hidden h-screen w-full bg-gray-800">
-    <div class="flex h-screen flex-col items-center justify-center">
+  <div class="overflow-y-hidden h-screen w-full bg-cover bg-no-repeat bg-center" style="background-image: url('{% static '/images/bg/chat-bg.png' %}');">
+    <div class="flex backdrop-blur-[1.2px] h-screen flex-col items-center justify-center">
         <div class="w-2/5">
-          <img src="{% static 'images/logo.png' %}" alt="start chatting" class="w-full h-auto" loading="lazy">
+          <img src="{% static 'images/logo.png' %}" alt="start chatting" class="shadow-lg w-full h-auto" loading="lazy">
         <div>
-          <h3 class="text-left font-bold text-4xl text-gray-500">Start a Conversat</h3>
-          <p class="text-left font-bold text-lg text-green-0-dark">Start chatting and connect with people</p>
+          <h3 class="shadow-lg text-left font-bold text-4xl text-gray-500 font-logo">Start a Conversat</h3>
+          <p class="shadow-lg text-left tracking-wide font-bold text-lg text-green-0-dark">Start chatting and connect with people</p>
         </div>
         </div>
     </div>
