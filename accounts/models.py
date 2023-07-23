@@ -28,7 +28,7 @@ class User(AbstractUser):
     
     class Meta:
         db_table = 'auth_user'
-        verbose_name_plural = "WhatsApp User"
+        verbose_name_plural = "Conversat User"
         ordering = ['date_joined']
     
     def __str__(self):
