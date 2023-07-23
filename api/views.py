@@ -45,7 +45,7 @@ def search_contact(request):
                         #check if user exists
                         if user is None:
                             status = 404
-                            error = "this phone number does not have whatsapp account"
+                            error = "this phone number does not have Conversat account"
                         else:
                             profile_pic = None
                             if user.profile_pic != "":
@@ -116,7 +116,7 @@ def add_to_contact(request):
                     #check if user exists
                     if user is None:
                         status = 404
-                        error = "this phone number does not have whatsapp account"
+                        error = "this phone number does not have Conversat account"
                     else:
                         #getting current user contacts instance
                         get_user_contacts = UserContacts.objects.filter(user=request.user).first()
