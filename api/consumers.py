@@ -2,8 +2,8 @@ from channels.generic.websocket import JsonWebsocketConsumer
 
 from asgiref.sync import async_to_sync
 
-
 from chat.models import Group, ChatMessages
+from accounts.utils import cache_get, cache_set, cache_delete
 
 
 class ChatConsumer(JsonWebsocketConsumer):
@@ -14,10 +14,11 @@ class ChatConsumer(JsonWebsocketConsumer):
     #constructor
     def __init__(self, *args, **kwargs):
         super().__init__(self, args, kwargs)
-        self.user = None
-        self.profile_pic = None
-        self.group_name = None
-        self.group_obj = None
+        self.user = None            #current user instance
+        self.profile_pic = None     #current user profile pic
+        self.group_name = None      #dynamic group name(id set in url)
+        self.group_obj = None       #group obj
+        self.cache_key = None       #for cache 
 
 
     #connect
@@ -35,7 +36,7 @@ class ChatConsumer(JsonWebsocketConsumer):
         self.group_name = self.scope['url_route']['kwargs']['group_name']
         
         #get the group instance and close connection if it doesn't exists
-        self.group_obj = Group.objects.filter(id=self.group_name).first()
+        self.group_obj = Group.objects.filter(id=self.group_name).select_related().first()
 
         #close connection if group_obj doesn't exists
         if self.group_obj is None:
@@ -48,12 +49,27 @@ class ChatConsumer(JsonWebsocketConsumer):
         # adding channel layer to group
         async_to_sync(self.channel_layer.group_add)(self.group_name, self.channel_name)
 
+        self.cache_key = f"ws_grp_online_mem_{self.group_name}"
+
+        #adding newly joined user to cached data
+        #get the cached data
+        cached_data = cache_get(self.cache_key)
+
+        #check if cache exists: if exists then someone else id online
+        if cached_data:
+            #add the user to cached data
+            cached_data[f"{self.user}"] = f"{self.user.first_name}"
+            cache_delete(self.cache_key)
+            cache_set(self.cache_key, cached_data)
+        else:
+            #no one online: create cached data
+            cache_set(self.cache_key, cached_data)
+
         #send list of online users to newly joined user
-        online_users = self.group_obj.online.all()
         self.send_json({
             "type": "user.list",
-            "online_num": len(online_users),
-            "online_users": [users.first_name for users in online_users]
+            "online_num": len(cached_data),
+            "online_users": [users for users in cached_data]
         })
 
         #send message to other users when a new user joins
@@ -62,9 +78,6 @@ class ChatConsumer(JsonWebsocketConsumer):
             "phone": self.user.phone,
             "username": self.user.first_name,
         })
-
-        #adding user to online field: added in end so that users dont see them as online 
-        self.group_obj.online.add(self.user)
 
 
     #receive message from client and send to group
@@ -102,8 +115,20 @@ class ChatConsumer(JsonWebsocketConsumer):
     #disconnect
     def disconnect(self, code):
 
-        #remove from online field of group
-        self.group_obj.online.remove(self.user)
+        #removing user from cached data when he exits
+        #get cached data
+        cached_data = cache_get(self.cache_key)
+
+        #check if cached data exists
+        if cached_data:
+            #remove the user from cached data
+            cached_data.pop(f"{self.user}", None)
+            #delete the cache
+            cache_delete(self.cache_key)
+            #set the cache only if someone else is online
+            if len(cached_data) > 0:
+                cache_set(self.cache_key, cached_data)
+
 
         #send msg when user leave
         async_to_sync(self.channel_layer.group_send)(self.group_name, {
