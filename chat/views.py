@@ -61,7 +61,7 @@ def new_chat_group(request):
                 is_desc = True
 
             #validate group name
-            if len(group_name) < 15:
+            if len(group_name) < 55:
                 if group_name != "" and not check_str_special(group_name) and len(group_name) > 1:
 
                     if is_desc:
@@ -172,6 +172,59 @@ def chat_group_settings(request, id):
         #check if group exists and user is a part of it
         if not group or request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
+        
+
+        #form execution for admin only
+        if request.method == "POST" and "grp-settings-btn" in request.POST:
+            group_name = request.POST.get("group_name")
+            group_desc = request.POST.get("group_desc")
+            selected_contacts = request.POST.getlist("phone_checkbox")
+
+            if len(group_name) < 55:
+                if group_name != "" and not check_str_special(group_name) and len(group_name) > 1:
+
+                    if len(group_desc) < 255:
+                        #check if at least 2 contacts are selected
+                        if len(selected_contacts) < 2:
+                            messages.error(request, "Your group must have at least 2 contacts")
+                        else:
+                            group_members = [request.user]
+                            for contact in selected_contacts:
+                                #check if contacts are valid
+                                if contact.isdigit() and len(contact) == 10:
+                                    #get user from phone
+                                    get_user = User.objects.filter(phone=contact).first()
+                                    #check if user exists
+                                    if get_user:
+                                        group_members.append(get_user)
+                            if len(group_members) >= 3:
+                                
+                                #update name and desc if present
+                                group.name = group_name
+                                group.description = group_desc
+
+                                #update image if present
+                                if request.FILES.get('group_pic') is not None:
+                                    group.group_pic = request.FILES.get('group_pic')
+                                group.save()
+
+                                #removing all users first
+                                group.members.clear()
+
+                                #updating members
+                                for users in group_members:
+                                    group.members.add(users)
+                                group.save()
+
+                                messages.success(request, "Group settings updated")
+                    else:
+                        messages.error(request, "group description too long")
+
+                else:
+                    messages.error(request, "invalid group name")
+            else:
+                messages.error(request, "group name too long")
+        
         
     except Exception as e:
         print(e)

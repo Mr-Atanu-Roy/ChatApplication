@@ -28,7 +28,7 @@
 
         <div class="mt-10 max-h-64  overflow-y-auto">
             <h3 class="text-white font-bold mb-3.5 capitalize">My Contacts</h3>
-            {% if contacts == None %}
+            {% if contacts.count == 0 %}
               <p class="text-white font-bold text-sm px-1.5">Your contacts will appear here</p>
             {% else %}
             {% for contact in contacts %}

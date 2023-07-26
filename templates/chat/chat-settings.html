@@ -13,7 +13,7 @@
 
         <h3 class="text-2xl text-white font-bold mb-8">Group Settings</h3>
         <div>
-            <div>
+            <div class="flex items-center justify-center">
                 <label for="group_pic" class="flex flex-col items-center justify-center">
                     <div id="profile-pic-box" class="border-green-0 border-[3px] border-solid cursor-pointer overflow-hidden w-32 h-32 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center" style="background-image: url('/media/{{group.group_pic}}');">
                     </div>
@@ -27,15 +27,15 @@
             </div>
 
             <div class="px-3 my-6 flex items-end justify-evenly">
-                <div class="text-center">
+                <div class="text-center flex flex-col items-center justify-center">
                     <div class="text-white text-xl col-span-1 overflow-hidden w-8 h-8 mb-1.5 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if group.owner.profile_pic == '' %} border-green-0 border-[2px] border-solid {% endif %}" {% if group.owner.profile_pic != '' %} style="background-image: url('/media/{{group.owner.profile_pic}}');" {% endif %}>
                         {% if group.owner.profile_pic == '' %} {{group.owner.first_name|slice:":1"}} {% endif %}
                     </div>
-                    <p class="text-green-0 capitalize text-xs">Owner</p>
+                    <p class="text-green-0 capitalize text-xs">Owner ({% if request.user == group.owner %}you{% else %}{{group.owner.first_name}}{% endif %})</p>
                 </div>	
                 <div class="text-center max-w-[135px]">
                     <i class="fa fa-clock-o text-xl text-red-600 mb-1.5"></i>
-                    <p class="text-green-0 capitalize text-xs">Created: {{group.created_at}}</p>
+                    <p class="text-green-0 capitalize text-xs">Created: {{group.created_at|date:"d.m.y"}}</p>
                 </div>	
                 <div class="text-center cursor-pointer" id="exit-group">
                     <i class="fa fa-sign-out text-xl text-red-600 mb-1.5"></i>
@@ -60,7 +60,7 @@
                 <label for="group_desc" class="mb-1.5 capitalize font-medium text-green-0 text-sm">group description</label>
                 <input type="text" id="group_desc" name="group_desc"
                     class="w-full h-10 border-b-2 border-green-0 outline-none bg-gray-700 text-white p-1 shadow-sm"
-                    placeholder="add description for your group" value="{{group.description}}">
+                    placeholder="add description for your group" value="{% if group.description != None%}{{group.description}}{% endif %}">
             </div>
             {% else %}
             <div class="mb-5 mt-6 flex flex-col">
@@ -69,14 +69,14 @@
             </div>
             <div class="mb-5 flex flex-col">
                 <p class="mb-1.5 capitalize font-medium text-green-0 text-sm">group description</p>
-                <p class="text-white text-base">{{group.description}}</p>
+                <p class="text-white text-base">{% if group.description != None%}{{group.description}}{% endif %}</p>
             </div>
             
             {% endif %}
  
 
             {% if request.user == group.owner %}
-                <button type="submit" id="create-group-btn"
+                <button type="submit" id="grp-settings-btn" name="grp-settings-btn"
                 class="mt-3 w-full text-white rounded bg-green-0 py-3 px-4 font-bold uppercase transition-colors duration-300 hover:bg-green-0-dark">Make Changes <i class="fa fa-long-arrow-right ml-3" aria-hidden="true"></i></button>
             {% endif %}
         </div>

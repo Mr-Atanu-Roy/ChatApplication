@@ -15,16 +15,14 @@ def get_user_group(user):
     #check is data exists
     if cached_data:
         group = cached_data
-        group_len = len(group)
+        group_len = len(group) if group != None else 0
     else:
         group = []
         
         #get groups where user is a member
         # get_groups = Group.objects.filter(members__in=[user])
         get_groups = get_user_chats(user)
-        if get_groups is None:
-            group_len = 0
-        group_len = len(get_groups)
+        group_len = len(get_groups) if get_groups != None else 0
 
         if(group_len > 0):
             for grp in get_groups:
