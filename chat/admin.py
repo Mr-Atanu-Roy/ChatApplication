@@ -22,7 +22,7 @@ class GroupAdmin(admin.ModelAdmin):
         }),
         ("More Details", {
             "fields": (
-                ['description', 'members', 'online']
+                ['description', 'members']
             ), 'classes': ['collapse']
         }),
     ]

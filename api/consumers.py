@@ -63,13 +63,17 @@ class ChatConsumer(JsonWebsocketConsumer):
             cache_set(self.cache_key, cached_data)
         else:
             #no one online: create cached data
+            cached_data = {
+                f"{self.user}": f"{self.user.first_name}"
+            }
+            #set cached data
             cache_set(self.cache_key, cached_data)
 
         #send list of online users to newly joined user
         self.send_json({
             "type": "user.list",
-            "online_num": len(cached_data),
-            "online_users": [users for users in cached_data]
+            "online_num": 0 if cached_data==None else len(cached_data),
+            "online_users": [] if cached_data==None else [users for users in cached_data]
         })
 
         #send message to other users when a new user joins

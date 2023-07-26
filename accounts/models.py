@@ -17,7 +17,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key = True, default = uuid.uuid4, editable = False)
     username = None
     phone = models.CharField(unique=True, max_length=15)
-    email = models.EmailField(blank=True, null=True)
+    email = models.EmailField(blank=True, null=True, default="")
     profile_pic = models.FileField(max_length=355, blank=True, null=True, upload_to="profile_pic/")
     last_logout = models.DateTimeField(null=True, blank=True)
     

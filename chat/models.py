@@ -7,7 +7,7 @@ from accounts.utils import BaseModel
 
 class Group(BaseModel):
     name = models.CharField(max_length=650)
-    description = models.CharField(max_length=500, null=True, blank=True)
+    description = models.CharField(max_length=500, null=True, blank=True, default="")
     group_pic = models.FileField(max_length=355, blank=True, null=True, upload_to="group_pic/", default="group_pic/default_group_pic.jpg")
     owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE, related_name='created_group')
     members = models.ManyToManyField(User)
