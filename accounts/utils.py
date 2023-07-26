@@ -81,6 +81,14 @@ def cache_delete(key):
     
     cache.delete(key)
 
+#func to delete cache with given prefix
+def cache_delete_many(key_with_prefix):
+    '''
+    this will delete cache data with key prefix key_with_prefix
+    '''
+    
+    cache.delete_many(keys=key_with_prefix)
+
 
 #func to get or create cache data
 def cache_get_or_create(key, value="", ttl_sec=CACHE_TTL):

@@ -11,7 +11,7 @@ from accounts.utils import cache_delete
 @receiver(post_save, sender=User)
 def User_created_handler(sender, instance, created, *args, **kwargs):
     '''
-    This signal will be executed each time a new user is created. It will add a UserContacts instance
+    This signal will be executed each time a new user is created. It will add a UserContacts instance and delete the cached data for search contact API
     '''
 
     try:
@@ -19,6 +19,10 @@ def User_created_handler(sender, instance, created, *args, **kwargs):
         if created:    
             user_contact = UserContacts(user=instance)
             user_contact.save()
+
+            #deleting the cache data cached by search contact API
+            key = f"{instance.user.phone}_searched"
+            cache_delete(key)
     except Exception as e:
         print(e)
         pass

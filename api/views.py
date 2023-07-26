@@ -175,7 +175,7 @@ def search_chats(request):
             #check if query is valid char
             if not check_str_special(query):
 
-                key = f"{request.user}_chat_searched_{query}"
+                key = f"{request.user.id}_chat_searched_{query}"
                 #get the cached data
                 cached_data = cache_get(key)
 

@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from chat.models import Group, ChatMessages
 
-from accounts.utils import cache_delete
+from accounts.utils import cache_delete, cache_delete_many
 
 
 #signals
@@ -16,14 +16,17 @@ def Group_create_handler(sender, instance, created,  *args, **kwargs):
 
     try:
         if created:
-            print("Created: ", created, "\n")
             #get all the group members
             members = instance.members.all()
 
             for user in members:
+                #DELETING THE CACHE STORE FOR CHAT BASE
                 key = f"{user.id}_groups_list"
                 #delete the cache
                 cache_delete(key)
+
+                #DELETING CACHE STORED BY SEARCH CHAT API
+                cache_delete_many(keys=f"{user.id}_chat_searched_*")
 
     except Exception as e:
         print(e)
@@ -59,10 +62,15 @@ def Group_delete_handler(sender, instance, *args, **kwargs):
     try:
         #get all the group members
         members = instance.members.all()
+
         for user in members:
+            #DELETING THE CACHE STORE FOR CHAT BASE
             key = f"{user.id}_groups_list"
             #delete the cache
             cache_delete(key)
+
+            #DELETING CACHE STORED BY SEARCH CHAT API
+            cache_delete_many(keys=f"{user.id}_chat_searched_*")
 
     except Exception as e:
         print(e)
