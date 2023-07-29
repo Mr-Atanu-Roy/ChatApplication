@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.models import User, UserContacts
 from chat.models import Group
 
-from accounts.utils import check_str_special, cache_set, cache_get
+from accounts.utils import check_str_special
 from chat.model_func import get_user_chats
 
 
@@ -31,40 +31,26 @@ def search_contact(request):
             if phone != request.user.phone:
                 if phone.isdigit() and len(phone) == 10:
 
-                    key = f"{phone}_searched"
-                    #get the cached data
-                    cached_data = cache_get(key)
-
-                    #check if data is cached
-                    if cached_data:
-                        return JsonResponse(cached_data, safe=False)
+                    #search for user
+                    user = User.objects.filter(phone=phone).first()
+                    
+                    #check if user exists
+                    if user is None:
+                        status = 404
+                        error = "this phone number does not have Conversat account"
                     else:
-                        #search for user
-                        user = User.objects.filter(phone=phone).first()
+                        profile_pic = None
+                        if user.profile_pic != "":
+                            profile_pic = f"/media/{user.profile_pic}"
                         
-                        #check if user exists
-                        if user is None:
-                            status = 404
-                            error = "this phone number does not have Conversat account"
-                        else:
-                            profile_pic = None
-                            if user.profile_pic != "":
-                                profile_pic = f"/media/{user.profile_pic}"
-                            
-                            data = {
-                                "name": user.first_name+" "+user.last_name,
-                                "phone": user.phone,
-                                "profile_pic": profile_pic
-                            }
-                            status = 200
-                            error = None
-                            
-                        #set the cache
-                        cache_set(key, {
-                            "status": status,
-                            "data": data,
-                            "error": error
-                        })
+                        data = {
+                            "name": user.first_name+" "+user.last_name,
+                            "phone": user.phone,
+                            "profile_pic": profile_pic
+                        }
+                        status = 200
+                        error = None  
+                        
 
                 else:
                     status = 400
@@ -175,41 +161,26 @@ def search_chats(request):
             #check if query is valid char
             if not check_str_special(query):
 
-                key = f"{request.user.id}_chat_searched_{query}"
-                #get the cached data
-                cached_data = cache_get(key)
+                chats = get_user_chats(request.user, query)
 
-                #check if cache exists
-                if cached_data:
-                    return JsonResponse(cached_data, safe=False)
+                #check if any chat is found
+                if chats is not None:
+                    data = []
+
+                    #iterate over each item and add to data as dict
+                    for chat in chats:
+                        data.append({
+                            "url": f"/chat/{chat.type}/{chat.id}",
+                            "name": chat.name,
+                            "desc": chat.description,
+                            "chat_pic": f"/media/{chat.group_pic}",
+                        })
+
+                    status = 200
+                    error = None
                 else:
-                    chats = get_user_chats(request.user, query)
-
-                    #check if any chat is found
-                    if chats is not None:
-                        data = []
-
-                        #iterate over each item and add to data as dict
-                        for chat in chats:
-                            data.append({
-                                "url": f"/chat/{chat.type}/{chat.id}",
-                                "name": chat.name,
-                                "desc": chat.description,
-                                "chat_pic": f"/media/{chat.group_pic}",
-                            })
-
-                        status = 200
-                        error = None
-                    else:
-                        status = 204
-                        error = "nothing found"
-
-                    #set the cache
-                    cache_set(key, {
-                        "status": status,
-                        "data": data,
-                        "error": error
-                    })
+                    status = 204
+                    error = "nothing found"
 
             else:
                 status = 400

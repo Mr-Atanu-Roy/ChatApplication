@@ -25,9 +25,6 @@ def Group_create_handler(sender, instance, created,  *args, **kwargs):
                 #delete the cache
                 cache_delete(key)
 
-                #DELETING CACHE STORED BY SEARCH CHAT API
-                cache_delete_many(keys=f"{user.id}_chat_searched_*")
-
     except Exception as e:
         print(e)
         pass
@@ -68,9 +65,6 @@ def Group_delete_handler(sender, instance, *args, **kwargs):
             key = f"{user.id}_groups_list"
             #delete the cache
             cache_delete(key)
-
-            #DELETING CACHE STORED BY SEARCH CHAT API
-            cache_delete_many(keys=f"{user.id}_chat_searched_*")
 
     except Exception as e:
         print(e)
