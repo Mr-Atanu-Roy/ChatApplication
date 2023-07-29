@@ -60,14 +60,14 @@ class ChatConsumer(JsonWebsocketConsumer):
             #add the user to cached data
             cached_data[f"{self.user}"] = f"{self.user.first_name}"
             cache_delete(self.cache_key)
-            cache_set(self.cache_key, cached_data)
+            cache_set(self.cache_key, cached_data, ttl_sec=60*60*24*365)
         else:
             #no one online: create cached data
             cached_data = {
                 f"{self.user}": f"{self.user.first_name}"
             }
             #set cached data
-            cache_set(self.cache_key, cached_data)
+            cache_set(self.cache_key, cached_data, ttl_sec=60*60*24*365)
 
         #send list of online users to newly joined user
         self.send_json({
@@ -133,7 +133,7 @@ class ChatConsumer(JsonWebsocketConsumer):
             cache_delete(self.cache_key)
             #set the cache only if someone else is online
             if len(cached_data) > 0:
-                cache_set(self.cache_key, cached_data)
+                cache_set(self.cache_key, cached_data, ttl_sec=60*60*24*365)
 
 
         #send msg when user leave

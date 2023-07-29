@@ -6,8 +6,8 @@
 
 {% block body %}
 
-<a href="/settings/group/{{group.id}}">
-    <div class="w-full fixed flex items-center bg-dark transition-colors p-3 py-2 top-0 shadow-md z-40">
+<div class="w-full fixed flex items-center justify-between bg-dark p-3 py-2 top-0 shadow-md z-40">
+    <a href="/settings/group/{{group.id}}" class="flex w-full items-center transition">
         <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center"
             style="background-image: url('/media/{{group.group_pic}}');"></div>
         <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
@@ -16,8 +16,8 @@
                 {{group.description}}
             </p>
         </div>
-    </div>
-</a>
+    </a>
+</div>
 
 <div class="pb-20 pt-24 bg-slate-900 w-full h-screen overflow-y-auto p-6 bg-cover bg-no-repeat bg-center" style="background-image: url('{% static '/images/bg/chat-bg.png' %}');">
     <div class="mb-20 flex items-center justify-center w-full">

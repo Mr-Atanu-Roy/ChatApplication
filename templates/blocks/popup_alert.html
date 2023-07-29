@@ -1,0 +1,32 @@
+<div id="popup-alert" class="items-center justify-center w-full h-screen fixed t-0 l-0 backdrop-blur-md hidden" style="z-index: 999999999999999999999999;">
+    <div class="rounded-md p-10 bg-white max-w-md mx-6 xs:m-0">
+        <div class="mb-6 flex items-center justify-end">
+            <span id="popup-close-btn">
+                <i class="fa fa-close cursor-pointer text-xl"></i>
+            </span>
+        </div>
+        <div class="font-medium" id="popup-message">
+            Are you sure you want to perform this action?
+        </div>
+        <div id="popup-btn-box" class="mt-8 w-full flex flex-col items-start sm:flex-row sm:items-center">
+            <div id="btn-1-box">
+                <button id="popup-btn-1" class="mb-2.5 sm:mb-0 mr-4 rounded-md bg-green-0 hover:bg-green-0-dark transition-colors py-2.5 px-5 xs:py-3 xs:px-6 text-sm xs:text-base text-white duration-300 uppercase font-bold">Go back</button>
+            </div>
+
+            <div id="btn-2-box">
+                <button id="popup-btn-2" class="rounded-md bg-red-600 hover:bg-red-700 transition-colors py-2 px-4 xs:py-3 xs:px-6 text-sm xs:text-base text-white duration-300 uppercase font-bold">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //setting close btn functionality
+    document.getElementById('popup-close-btn').addEventListener('click', function() {
+    document.getElementById('popup-alert').style.display = 'none';
+    });
+
+    //setting go back btn functionality: default is to close the alert box
+    document.getElementById('popup-btn-1').addEventListener('click', function() {
+    document.getElementById('popup-alert').style.display = 'none';
+    });
+</script>
