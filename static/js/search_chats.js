@@ -9,8 +9,8 @@ $(document).ready(function () {
             let old_content = $("#chat-records").html();
 
             //get the search box val
-            query = $(this).val();
-            if(query != "" && query.trim() != ""){
+            query = $(this).val().trim();
+            if(query != ""){
                 $.ajax({
                     type: "get",
                     url: "/api/chat_search/",
@@ -32,7 +32,7 @@ $(document).ready(function () {
                                         style="background-image: url('${data[index]["chat_pic"]}');"></div>
                                     <div class="ml-3.5 lg:ml-3 col-span-5 w-full overflow-hidden text-white pl-3.5 lg:pl-5 2xl:p-0">
                                         <p class="font-bold text-lg">${data[index]["name"]}</p>
-                                        <p class="font-bold text-xs text-gray-400">${data[index]["desc"]}</p>
+                                        <p class="font-bold text-xs text-gray-400">${data[index]["desc"] == null ? "" : data[index]["desc"]}</p>
                                     </div>
                                 </a>`;
                             }

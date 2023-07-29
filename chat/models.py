@@ -22,7 +22,7 @@ class Group(BaseModel):
     
     class Meta:
         verbose_name_plural = "Conversat Groups"
-        ordering = ['created_at']
+        ordering = ['-created_at']
     
 
 

@@ -36,7 +36,7 @@ def get_user_group(user):
                     "name": group_name,
                     "link": link,
                     "group_pic": group_pic,
-                    "desc": group_desc
+                    "desc": group_desc if group_desc != None else ""
                 }
 
                 group.append(data)
