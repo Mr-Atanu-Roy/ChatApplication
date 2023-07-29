@@ -86,21 +86,23 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     #receive message from client and send to group
     def receive_json(self, context, **kwargs):
-        msg = context.get("msg")
+        msg = context.get("msg").strip()
 
-        #saving to db
-        new_chat = ChatMessages.objects.create(group=self.group_obj, sender=self.user, message=msg)
-        new_chat.save()
-        chat_time = new_chat.created_at.strftime("%B %d, %Y, %I:%M %p")
+        #check if msg is blank or not
+        if msg != "":
+            #save msg to db
+            new_chat = ChatMessages.objects.create(group=self.group_obj, sender=self.user, message=msg)
+            new_chat.save()
+            chat_time = new_chat.created_at.strftime("%B %d, %Y, %I:%M %p")
 
-        async_to_sync(self.channel_layer.group_send)(self.group_name, {
-            "type": "chat.message",
-            "message": msg,
-            "user_phone": self.user.phone,
-            "user_name": self.user.first_name,
-            "user_pic": self.profile_pic,
-            "time": str(chat_time),
-        })
+            async_to_sync(self.channel_layer.group_send)(self.group_name, {
+                "type": "chat.message",
+                "message": msg,
+                "user_phone": self.user.phone,
+                "user_name": self.user.first_name,
+                "user_pic": self.profile_pic,
+                "time": str(chat_time),
+            })
 
 
     #handler to send msg to client when a client send msg to
