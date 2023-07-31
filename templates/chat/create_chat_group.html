@@ -41,10 +41,11 @@
 
         <h3 class="mt-8 text-white font-bold mb-3.5 capitalize">Add people to group</h3>
 
-        <div class="mt-5 max-h-[17rem] overflow-x-hidden overflow-y-auto">
+        <div class="mt-5 overflow-x-hidden overflow-y-auto pb-3">
             {% if contacts == None %}
-              <p class="text-white font-bold text-sm px-1.5">To add people to group, add people to your contact</p>
+              <p class="text-white font-bold text-sm px-1.5">To add people to group, add people to your friend list</p>
             {% else %}
+
             {% for contact in contacts %}
             <div class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" id="user-search-contact-box">
                 <label data-ripple-dark="true" for="{{contact.phone}}" class="grid grid-cols-6 place-items-center">
@@ -61,8 +62,9 @@
                 
             </div>
             {% endfor %}
+
             {% endif %}
-            <div class="text-center text-xs text-white mt-5"> <a href="{% url 'contacts' %}" class="hover:text-green-0-dark transition-colors">add more people to your contacts to create group with them</a></div>
+            <div class="text-center text-xs text-white mt-5"> <a href="{% url 'contacts' %}" class="hover:text-green-0-dark transition-colors">add more people to your friend list to create group with them</a></div>
             
         </div>
     </form>

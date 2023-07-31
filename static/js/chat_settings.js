@@ -18,15 +18,15 @@ $(document).ready(function () {
           let status = response.status;
           let message = response.message;
           let error = response.error;
-          let content = ``;
 
           if (error == null && status == 201) {
-            alert(message)
-
-            //reload page to see the changes
-            location.reload();
+            $("#popup-message").html(message);
+            $("#popup-btn-2").css("display", "none");
+            $("#popup-alert").css("display", "flex");
           } else if (status == 404 || status == 400) {
-              alert(error)
+            $("#popup-message").html(error);
+            $("#btn-2-box").css("display", "none");
+            $("#popup-alert").css("display", "flex");
           }
 
         },

@@ -112,11 +112,11 @@ def add_to_contact(request):
                                 get_user_contacts.contacts.add(user)
                                 get_user_contacts.save()
 
-                                message = f"{phone} added to contact"
+                                message = f"{phone} added to friend list"
                                 status = 201
                                 error = None
                             else:
-                                error = f"{phone} is already in your contact"
+                                error = f"{phone} is already in your friend list"
                                 status = 400
                 else:
                     status = 400

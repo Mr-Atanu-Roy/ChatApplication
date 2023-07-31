@@ -22,11 +22,18 @@
 <script>
     //setting close btn functionality
     document.getElementById('popup-close-btn').addEventListener('click', function() {
-    document.getElementById('popup-alert').style.display = 'none';
+        document.getElementById('popup-alert').style.display = 'none';
+        //setting display of btn and its cnotainer to inline flex after go back or close button is pressed 
+        document.getElementById('btn-2-box').style.display = 'inline-block';
+        document.getElementById('popup-btn-2').style.display = 'inline-block';
     });
-
+    
     //setting go back btn functionality: default is to close the alert box
     document.getElementById('popup-btn-1').addEventListener('click', function() {
-    document.getElementById('popup-alert').style.display = 'none';
+        document.getElementById('popup-alert').style.display = 'none';
+        //setting display of btn and its cnotainer to inline flex after go back or close button is pressed 
+        document.getElementById('btn-2-box').style.display = 'inline-block';
+        document.getElementById('popup-btn-2').style.display = 'inline-block';
     });
+
 </script>
