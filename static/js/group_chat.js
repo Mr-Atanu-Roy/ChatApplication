@@ -106,7 +106,11 @@ $(document).ready(function () {
                   content += `justify-end`;
                 }
                 content += `">
-              <div class="flex flex-col">`;
+              <div class="flex flex-col `;
+              if(PHONE == phone){
+                content += `items-end`;
+              }
+              content += `">`;
                 if (PHONE != phone) {
                   content += `
                     <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `;
@@ -124,7 +128,7 @@ $(document).ready(function () {
 
                   content += `</div>`;
                 }
-                content += `<div class="max-w-md py-2 my-1 px-3 text-white bg-green-0 w-fit rounded-lg `;
+                content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-2 my-1 px-3 text-white bg-green-0 w-fit rounded-lg `;
                 if (PHONE == phone) {
                   content += `rounded-tr-none`;
                 } else {
@@ -141,7 +145,7 @@ $(document).ready(function () {
                         `;
                 }
                 content += `</div>
-                      <p>${msg}</p>
+                      <p class="break-words">${msg}</p>
                   </div>
                   <p class="text-gray-300 text-xs text-right">${time}</p>
               </div>
@@ -180,7 +184,7 @@ $(document).ready(function () {
                     content += `</div>`;
                 }
                     
-                content += `<div class="max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `;
+                content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `;
                 if (PHONE == phone) {
                   content += `rounded-tr-none`;
                 } else {
@@ -191,7 +195,7 @@ $(document).ready(function () {
                   content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
                 }
                   content += `<a href="${msg}" target="_blank" class="flex items-center justify-center text-slate-900 font-bold text-xs">
-                            <img src="${msg}" alt="${msg_type}" class="w-80 h-auto" loading="lazy">
+                            <img src="${msg}" alt="${msg_type}" class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" loading="lazy">
                         </a>
                     </div>
                     <p class="text-gray-300 text-xs text-right">${time}</p>
@@ -229,7 +233,7 @@ $(document).ready(function () {
 
               content += `</div>`;
             }
-            content += `<div class="max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `; 
+            content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `; 
             if (PHONE == phone) {
               content += `rounded-tr-none`;
             } else {
@@ -240,7 +244,7 @@ $(document).ready(function () {
               content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
             }        
               content += `<a target="_blank" href="${msg}" class="flex items-center justify-center text-slate-900 font-bold text-xs">
-                        <video class="w-80 h-auto" controls>
+                        <video class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" controls>
                             <source src="${msg}" type="video/${data.file_ext}" loading="lazy">
                         </video>
                     </a>
@@ -280,7 +284,7 @@ $(document).ready(function () {
 
               content += `</div>`;
             }
-            content += `<div class="max-w-md py-1.5 my-1 px-2 text-white w-fit rounded-lg `; 
+            content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white w-fit rounded-lg `; 
             if (PHONE == phone) {
               content += `rounded-tr-none`;
             } else {
@@ -291,7 +295,7 @@ $(document).ready(function () {
               content += `<p class="mr-14 bg-green-0 rounded w-fit py-1 px-1.5 text-slate-900 font-bold mb-2 text-xs">you</p>`;
             }        
               content += `<a target="_blank" href="${msg}" class="flex items-center justify-center text-slate-900 font-bold text-xs">
-                        <audio controls>
+                        <audio class="w-56 xs:w-64 sm:w-72 md:w-80" controls>
                             <source src="${msg}" type="audio/${data.file_ext}" loading="lazy">
                         </audio>
                     </a>
@@ -330,7 +334,7 @@ $(document).ready(function () {
 
                       content += `</div>`;
                     }
-              content += `<div class="max-w-md p-2.5 my-1  text-white bg-green-0 w-fit rounded-lg `;
+              content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md p-2.5 my-1 text-white bg-green-0 w-fit rounded-lg `;
                   if (PHONE == phone) {
                     content += `rounded-tr-none`;
                   } else {
@@ -340,9 +344,9 @@ $(document).ready(function () {
                   if (PHONE == phone) {
                     content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
                   } 
-                        content += `<div class="border-2 rounded p-2.5 w-[18.7rem]">
-                            <div class="flex items-center justify-evenly text-slate-900 font-bold text-xs">
-                                <div class="flex items-center justify-center w-14 h-14 mr-3 text-4xl">`;
+                        content += `<div class="border-2 rounded p-2.5 w-48 xs:w-56 sm:w-64 md:w-72">
+                            <div class="flex flex-col sm:flex-row items-center justify-evenly text-slate-900 font-bold text-xs">
+                                <div class="flex items-center justify-center mb-1.5 w-14 h-14 sm:mr-3 sm:mb-0">`;
                                 if(data.file_ext == "pdf"){
                                   content += `<img src="/static/images/icons/pdf.png" alt="${data.file_ext}" class="w-full h-full">`;
                                 }else if(data.file_ext == "doc" || data.file_ext == "docx"){
@@ -354,9 +358,9 @@ $(document).ready(function () {
                                 }
                                     
                     content += `</div>
-                                <div>
-                                    <p class="text-white text-sm">${data.file_name}</p>
-                                    <p class="text-xs text-gray-700 mt-1">${data.file_size.toString().slice(0,4)} MB `;
+                                <div class="w-full sm:w-fit">
+                                    <p class="text-white text-sm break-words">${data.file_name}</p>
+                                    <p class="text-xs text-gray-700 mt-1 break-words">${data.file_size.toString().slice(0,4)} MB `;
                                     if(data.file_ext == "pdf"){
                                       content += `PDF`;
                                     }else if(data.file_ext == "doc" || data.file_ext == "docx"){
@@ -367,9 +371,9 @@ $(document).ready(function () {
                               content += `Document</p>
                                 </div>
                             </div>
-                            <div class="flex justify-between items-center mb-1 mt-3">
-                                <a href="${msg}" target="_blank" class="py-2.5 px-2 w-1/2 mr-2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-sm">open file</a>
-                                <a href="${msg}" target="_blank" download="${msg}" class="py-2.5 px-2 w-1/2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-sm">download</a>
+                            <div class="flex flex-col sm:flex-row justify-between items-center mb-1 mt-3">
+                                <a href="${msg}" target="_blank" class="py-2.5 px-2 w-full mb-2 sm:mb-0 sm:w-1/2 sm:mr-2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs sm:text-sm">open file</a>
+                                <a href="${msg}" target="_blank" download="${msg}" class="py-2.5 px-2 w-full sm:w-1/2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs sm:text-sm">download</a>
                             </div>
                         </div>
                     </div>
