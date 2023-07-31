@@ -3,9 +3,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
 from accounts.models import User, UserContacts
-from chat.models import Group
+from chat.models import Group, ChatMessages
 
-from accounts.utils import check_str_special
+from accounts.utils import check_str_special, get_file_type
 from chat.model_func import get_user_chats
 
 
@@ -92,7 +92,6 @@ def add_to_contact(request):
     try:
         if request.method == "POST":
             phone = request.POST.get("phone").strip()
-            print(phone)
             #validate phone
             if phone != request.user.phone:
                 if phone.isdigit() and len(phone) == 10:
@@ -315,3 +314,74 @@ def delete_group(request):
     return JsonResponse(response, safe=False)
 
 
+
+@login_required(login_url="/auth/login")
+@csrf_exempt
+def upload_msg_file(request):
+    '''
+    Handel the submission of file input form from chats
+    '''
+
+
+    response = {}
+    status = 0,
+    data = None,
+    error = "no data"
+
+    try:
+        if request.method == "POST":
+            group_id = request.POST.get("group_id")   #get the group id
+            file = request.FILES.get("file-msg")   #get the file 
+
+            #get the group
+            group = Group.objects.filter(id=group_id).first()
+            #check if group exists
+            if group is not None:
+
+                #get the file extension
+                file_ext = file.name.split('.')[-1]
+                #get the file type
+                file_type = get_file_type(file_ext)
+                #getting file size in mb
+                file_size = file.size*0.000001
+                
+                #check if file type is not None
+                if file_type != None:
+                    #upload the file
+                    new_msg = ChatMessages.objects.create(sender=request.user, group=group, message_type=file_type, file=file, file_name=file.name, file_size=file_size, file_ext=file_ext)
+                    
+                    file_url = f"/media/{new_msg.file}"
+                    data = {
+                        "file_type": file_type,
+                        "file_ext": file_ext,
+                        "file_name": file.name,
+                        "file_url": file_url,
+                        "file_size": file_size,
+                        "created_at": new_msg.created_at.strftime("%B %d, %Y, %I:%M %p")
+                    }
+                    error = None
+                    status = 201
+                
+                else:
+                    error = "Invalid file type"
+                    status = 415
+            
+            else:
+                error = "Invalid request"
+                status = 406
+            
+
+        else:
+            status = 405
+            error = "only POST method is allowed"
+
+
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["data"] = data
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)

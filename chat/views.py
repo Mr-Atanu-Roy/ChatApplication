@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 
 from accounts.models import User
-from chat.models import Group
+from chat.models import Group, ChatMessages
 
 from accounts.utils import check_str_special, cache_get, cache_set
 from accounts.model_func import get_user_contacts
@@ -128,7 +128,9 @@ def chat_group(request, id):
         group = Group.objects.filter(id=id).first()
 
         #check if group exists and user is a part of it
-        if not group or request.user not in group.members.all():
+        if not group:
+            return HttpResponse("<h3>INVALID GROUP</h3>")
+        if request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
         
         key = f"{group.id}_chat_messages"

@@ -107,3 +107,21 @@ def cache_get_or_create(key, value="", ttl_sec=CACHE_TTL):
     #get and return the cache
     return cache_get(key), True
 
+
+VALID_EXTENSIONS = {
+    "img": ['png', 'gif', 'jpg', 'jpeg'],
+    "doc": ['doc', 'docx', 'ppt', 'pptx', 'pdf'],
+    "audio":  ['mp3', 'ogg'],
+    "video": ['mp4', 'mov'],
+}
+
+
+#func to check file type from extension
+def get_file_type(ext):
+    
+    for ext_types in VALID_EXTENSIONS:
+        if ext in VALID_EXTENSIONS.get(ext_types):
+            return ext_types
+            
+    
+    return None

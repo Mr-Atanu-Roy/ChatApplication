@@ -69,7 +69,7 @@
             </div>
             <div class="mb-5 flex flex-col">
                 <p class="mb-1.5 capitalize font-medium text-green-0 text-sm">group description</p>
-                <p class="text-white text-base">{% if group.description != None%}{{group.description}}{% endif %}</p>
+                <p class="text-white text-base">{% if group.description != None%}{{group.description}}{% else %} <span class="text-gray-500 text-xs">Nothing added yet</span> {% endif %}</p>
             </div>
             
             {% endif %}

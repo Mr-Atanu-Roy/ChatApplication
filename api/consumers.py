@@ -86,23 +86,36 @@ class ChatConsumer(JsonWebsocketConsumer):
 
     #receive message from client and send to group
     def receive_json(self, context, **kwargs):
+        msg_type = context.get("msg_type")
         msg = context.get("msg").strip()
+        file_size = context.get("file_size", 0)
+        chat_time = context.get("created_at", "")
+        file_ext = context.get("file_ext", None)
+        file_name = context.get("file_name", None)
 
         #check if msg is blank or not
-        if msg != "":
-            #save msg to db
-            new_chat = ChatMessages.objects.create(group=self.group_obj, sender=self.user, message=msg)
-            new_chat.save()
-            chat_time = new_chat.created_at.strftime("%B %d, %Y, %I:%M %p")
+        if msg_type != "":
+            #check if msg is blank or not
+            if msg != "":
+                #save msg to db if msg type is text
+                if msg_type == "text":
+                    new_chat = ChatMessages.objects.create(group=self.group_obj, sender=self.user, message=msg)
+                    new_chat.save()
+                    chat_time = new_chat.created_at.strftime("%B %d, %Y, %I:%M %p")
+                    
 
-            async_to_sync(self.channel_layer.group_send)(self.group_name, {
-                "type": "chat.message",
-                "message": msg,
-                "user_phone": self.user.phone,
-                "user_name": self.user.first_name,
-                "user_pic": self.profile_pic,
-                "time": str(chat_time),
-            })
+                async_to_sync(self.channel_layer.group_send)(self.group_name, {
+                    "type": "chat.message",
+                    "msg_type": msg_type,
+                    "message": msg,
+                    "file_size": file_size,
+                    "file_name": file_name,
+                    "file_ext": file_ext,
+                    "user_phone": self.user.phone,
+                    "user_name": self.user.first_name,
+                    "user_pic": self.profile_pic,
+                    "time": str(chat_time),
+                })
 
 
     #handler to send msg to client when a client send msg to

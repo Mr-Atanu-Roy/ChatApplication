@@ -29,7 +29,80 @@
     <div id="group-chat-msg">
     {% if group_msg != None %}
         {% for msg in group_msg %}
-        <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
+        
+        {% if msg.message_type == "text" %}
+            <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
+                <div class="flex flex-col">
+                    {% if msg.sender != request.user %}
+                    <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}" {% if msg.sender.profile_pic != '' %}
+                        style="background-image: url('/media/{{msg.sender.profile_pic}}');" {% endif %}>
+                        {% if msg.sender.profile_pic == '' %} {{msg.sender.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="max-w-md py-2 my-1 px-3 text-white bg-green-0 w-fit rounded-lg {% if msg.sender == request.user %}rounded-tr-none{% else %}rounded-tl-none{% endif %}">
+                        <div class="flex items-center justify-between text-slate-900 font-bold mb-1.5 text-xs">
+                            {% if msg.sender == request.user %}
+                            <p class="mr-14">you</p>
+                            {% else %}
+                            <p class="mr-14">{{msg.sender.first_name}}</p>
+                            <p>{{msg.sender.phone}}</p>
+                            {% endif %}
+                        </div>
+                        <p>{{msg.message}}</p>
+                    </div>
+                    <p class="text-gray-300 text-xs text-right">{{msg.updated_at}}</p>
+                </div>
+            </div>                 
+        {% elif msg.message_type == "img" %}
+            <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
+                <div class="flex flex-col">
+                    {% if msg.sender != request.user %}
+                    <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}" {% if msg.sender.profile_pic != '' %}
+                        style="background-image: url('/media/{{msg.sender.profile_pic}}');" {% endif %}>
+                        {% if msg.sender.profile_pic == '' %} {{msg.sender.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg {% if msg.sender == request.user %}rounded-tr-none{% else %}rounded-tl-none{% endif %}">
+                        {% if msg.sender == request.user %}
+                        <p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>
+                        {% endif %}
+                        <div class="flex items-center justify-center text-slate-900 font-bold text-xs relative">
+                            <img src="/media/{{msg.file}}" alt="{{msg.sender}}" class="w-80 h-auto" loading="lazy">
+                            <div class="opacity-0 h-full w-full absolute top-0 left-0 transition-all duration-300 backdrop-brightness-50 flex items-center justify-center hover:opacity-100">
+                                <a target="_blank" href="/media/{{msg.file}}" download="/media/{{msg.file}}" class="text-2xl text-white text-center">
+                                    <i class="fa fa-arrow-circle-o-down"></i>
+                                    <p class="text-white text-base">Download</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-xs text-right">{{msg.updated_at}}</p>
+                </div>
+            </div>                 
+        {% elif msg.message_type == "video" %}
+            <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
+                <div class="flex flex-col">
+                    {% if msg.sender != request.user %}
+                    <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}" {% if msg.sender.profile_pic != '' %}
+                        style="background-image: url('/media/{{msg.sender.profile_pic}}');" {% endif %}>
+                        {% if msg.sender.profile_pic == '' %} {{msg.sender.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg {% if msg.sender == request.user %}rounded-tr-none{% else %}rounded-tl-none{% endif %}">
+                        {% if msg.sender == request.user %}
+                        <p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>
+                        {% endif %}
+                        <a target="_blank" href="/media/{{msg.file}}" class="flex items-center justify-center text-slate-900 font-bold text-xs">
+                            <video class="w-80 h-auto" controls>
+                                <source src="/media/{{msg.file}}" type="video/{{msg.file_ext}}" loading="lazy">
+                            </video>
+                        </a>
+                    </div>
+                    <p class="text-gray-300 text-xs text-right">{{msg.updated_at}}</p>
+                </div>
+            </div>       
+        {% elif msg.message_type == "audio" %}
+            <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
             <div class="flex flex-col">
                 {% if msg.sender != request.user %}
                 <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}" {% if msg.sender.profile_pic != '' %}
@@ -37,35 +110,88 @@
                     {% if msg.sender.profile_pic == '' %} {{msg.sender.first_name|slice:":1"}} {% endif %}
                 </div>
                 {% endif %}
-                <div class="max-w-md py-2 my-1 px-3 text-white bg-green-0 w-fit rounded-lg {% if msg.sender == request.user %}rounded-tr-none{% else %}rounded-tl-none{% endif %}">
-                    <div class="flex items-center justify-between text-slate-900 font-bold mb-1.5 text-xs">
-                        {% if msg.sender == request.user %}
-                        <p class="mr-14">you</p>
-                        {% else %}
-                        <p class="mr-14">{{msg.sender.first_name}}</p>
-                        <p>{{msg.sender.phone}}</p>
-                        {% endif %}
+                <div class="max-w-md py-1.5 my-1 px-2 text-white w-fit rounded-lg {% if msg.sender == request.user %}rounded-tr-none{% else %}rounded-tl-none{% endif %}">
+                    {% if msg.sender == request.user %}
+                    <p class="mr-14 bg-green-0 rounded w-fit py-1 px-1.5 text-slate-900 font-bold mb-2 text-xs">you</p>
+                    {% endif %}
+                    <div class="flex items-center justify-center text-slate-900 font-bold text-xs">
+                        <audio controls>
+                            <source src="/media/{{msg.file}}" type="audio/{{msg.file_ext}}">
+                        </audio>
                     </div>
-                    <p>{{msg.message}}</p>
                 </div>
                 <p class="text-gray-300 text-xs text-right">{{msg.updated_at}}</p>
             </div>
-        </div>
+            </div>    
+        {% elif msg.message_type == "doc" %}
+            <div class="my-2 w-full flex items-center {% if msg.sender == request.user %}justify-end{% endif %}">
+                <div class="flex flex-col">
+                    {% if msg.sender != request.user %}
+                    <div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if msg.sender.profile_pic == '' %} border-green-0 border-[2.2px] border-solid flex items-center justify-center {% endif %}" {% if msg.sender.profile_pic != '' %}
+                        style="background-image: url('/media/{{msg.sender.profile_pic}}');" {% endif %}>
+                        {% if msg.sender.profile_pic == '' %} {{msg.sender.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    {% endif %}
+                    <div class="max-w-md p-2.5 my-1  text-white bg-green-0 w-fit rounded-lg {% if msg.sender == request.user %}rounded-tr-none{% else %}rounded-tl-none{% endif %}">
+                        {% if msg.sender == request.user %}
+                        <p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>
+                        {% endif %}
+                        <div class="border-2 rounded p-2.5 w-[18.7rem]">
+                            <div class="flex items-center justify-evenly text-slate-900 font-bold text-xs">
+                                <div class="flex items-center justify-center w-14 h-14 mr-3 text-4xl">
+                                    {% if msg.file_ext == "pdf" %}
+                                    <img src="{% static 'images/icons/pdf.png' %}" alt="{{msg.file_ext}}" class="w-full h-full">
+                                    {% elif msg.file_ext == "doc" or msg.file_ext == "docx" %}
+                                    <img src="{% static 'images/icons/doc.png' %}" alt="{{msg.file_ext}}" class="w-full h-full">
+                                    {% elif msg.file_ext == "ppt" or msg.file_ext == "pptx" %}
+                                    <img src="{% static 'images/icons/ppt.png' %}" alt="{{msg.file_ext}}" class="w-full h-full">
+                                    {% else %}
+                                    <img src="{% static 'images/icons/txt.png' %}" alt="{{msg.file_ext}}" class="w-full h-full">
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <p class="text-white text-sm">{{msg.file_name}}</p>
+                                    <p class="text-xs text-gray-700 mt-1">{{msg.file_size|slice:"4"}} MB {% if msg.file_ext == "pdf" %}PDF {% elif msg.file_ext == "doc" or msg.file_ext == "docx" %}MS Word {% elif msg.file_ext == "ppt" or msg.file_ext == "pptx" %}MS Powerpoint {% endif %} Document</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center mb-1 mt-3">
+                                <a href="/media/{{msg.file}}" target="_blank" class="py-2.5 px-2 w-1/2 mr-2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-sm">open file</a>
+                                <a href="/media/{{msg.file}}" target="_blank" download="/media/{{msg.file}}" class="py-2.5 px-2 w-1/2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-sm">download</a>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-xs text-right">{{msg.updated_at}}</p>
+                </div>
+            </div>                 
+        {% endif %}
+
         {% endfor %}
     {% endif %}
+    
     </div>
     <div id="end"></div>
 </div>
 
-<form class="text-white w-full fixed bg-dark p-2.5 bottom-0 z-50" id="send-msg-form">
+<form class="text-white w-full fixed bg-dark p-2.5 bottom-0 z-40" id="send-msg-form">
     <input name="input-message" id="input-message" type="text"
         class="tracking-wide w-9/12 bg-dark mx-auto h-12 border-0 outline-none rounded-md text-white"
         autocomplete="off" placeholder="Type a message">
 
-    <button type="submit" class="fixed cursor-pointer right-6 bottom-3 bg-green-0 hover:bg-green-0-dark transition-colors rounded py-1.5 px-4"
+    <div class="fixed right-6 bottom-3 flex">
+        <button type="submit" class="cursor-pointer bg-green-0 hover:bg-green-0-dark transition-colors rounded py-1.5 px-4"
         id="send-msg-btn">
         <i class="fa fa-paper-plane p-color text-xl"></i>
-    </button>
+        </button>
+    </div>
+</form>
+<form enctype="multipart/form-data" class="right-20 bottom-3 fixed z-40 flex justify-center items-center" id="file-msg-form">
+    <button type="submit" id="send-file-btn" class="hidden text-white text-sm rounded bg-light-dark py-1 px-2">send</button>
+    <input type="file" id="file-msg" name="file-msg" class="hidden">
+    <label for="file-msg">
+        <div class="text-white w-10 h-10 flex items-center justify-center text-xl cursor-pointer">
+            <i class="fa fa-paperclip"></i>
+        </div>
+    </label>
 </form>
 
 {% endblock body %}

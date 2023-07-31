@@ -10,4 +10,6 @@ urlpatterns = [
 
     path("group/exit-group/", exit_group, name="exit_group"),
     path("group/delete-group/", delete_group, name="delete_group"),
+
+    path("msg/upload-file/", upload_msg_file, name="upload_msg_file"),
 ]

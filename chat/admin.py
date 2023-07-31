@@ -33,11 +33,16 @@ class GroupAdmin(admin.ModelAdmin):
     
 @admin.register(ChatMessages)
 class ChatMessagesAdmin(admin.ModelAdmin):
-    list_display = ('group', 'sender', 'created_at')
+    list_display = ('group', 'sender', 'message_type', 'created_at')
     fieldsets = [
         ("Message Details", {
             "fields": (
-                ['group', 'sender', 'message']
+                ['group', 'sender', 'message_type', 'message', 'file']
             ),
+        }),
+         ("More Details", {
+            "fields": (
+                ['file_name', 'file_ext', 'file_size']
+            ), 'classes': ['collapse']
         }),
     ]
