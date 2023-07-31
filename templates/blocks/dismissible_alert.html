@@ -1,23 +1,28 @@
 {% if messages %}
-    {% for message in messages %}
-    <div id="alert-box"
-        class="{% if message.tags %}{{message.tags}}{% endif %} border px-4 py-3 fixed top-8 right-8 rounded-lg w-4/5 md:w-2/5" role="alert" style="z-index: 99999999999999;">
-        <strong class="capitalize block sm:inline"><i class="fa fa-exclamation-triangle"></i> {{message}}</strong>
-        <span class="absolute top-0 bottom-0 right-2 px-4 py-3" id="closeAlertBtn">
-            <svg class="fill-current h-6 w-6 {% if message.tags %}{{message.tags}}{% endif %}" role="button"
-                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <title>Close</title>
-                <path
-                    d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
+{% for message in messages %}
+    <div id="alert-box" class="rounded fixed bg-white top-8 right-8 flex items-center h-16 border border-gray-300 pr-4 mb-1.5 max-w-[16rem] xs:max-w-xs sm:max-w-md w-full shadow-lg" style="z-index: 99999999999999999999;">
+        <div class="flex items-center justify-center {% if message.tags %}{{message.tags}}{% endif %} w-16 h-full">
+            <i class="fa fa-exclamation-triangle"></i>
+        </div>
+        <div class="px-4 py-2.5">
+            <p class="text-sm capitalize font-semibold tracking-wider break-words">{{message}}</p>
+        </div>
+        <button class="ml-auto closeAlertBtn">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
-        </span>
+        </button>
     </div>
-    {% endfor %}
-
+{% endfor %}
 <script>
-    const closeAlertBtn = document.getElementById("closeAlertBtn")
-    closeAlertBtn.addEventListener("click", () => {
-        document.getElementById("alert-box").style.display = "none"
-    });
+    // Add a click event handler to close buttons
+    var closeAlertButtons = document.getElementsByClassName("closeAlertBtn");
+    for (var i = 0; i < closeAlertButtons.length; i++) {
+        closeAlertButtons[i].addEventListener("click", function () {
+            // Hide the parent alert when the close button is clicked
+            this.parentNode.style.display = "none";
+        });
+    }
 </script>
+
 {% endif %}
