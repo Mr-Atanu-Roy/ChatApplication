@@ -22,7 +22,7 @@ function user_join(name, phone, user_phone) {
   if (phone == user_phone) {
     content = `You joined now...`;
   } else {
-    content = `${name}: ${phone} joined now...`;
+    content = `${name} joined now...`;
   }
   set_header(content);
 
@@ -37,7 +37,7 @@ function user_leave(name, phone) {
   online_users_num = parseInt(sessionStorage.getItem("online_users_num")) - 1;
   sessionStorage.setItem("online_users_num", online_users_num);
 
-  let content = `${name}: ${phone} left now...`;
+  let content = `${name} left now...`;
   set_header(content);
 
   setTimeout(function () {

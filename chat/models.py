@@ -27,7 +27,7 @@ class Group(BaseModel):
     type = models.CharField(default="group", choices=(("personal", "Personal"), ("group", "Group")), max_length=255)
 
     #for tracking who are online
-    # online = models.ManyToManyField(User, related_name='online')
+    online = models.ManyToManyField(User, related_name='online')
 
     def __str__(self):
         return self.name
