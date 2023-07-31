@@ -33,10 +33,14 @@
                     <div class="flex flex-col py-3 pr-2 border-r-2 border-green-0-dark border-solid items-start justify-between">
                         <div class="flex flex-col">
                             <a href="{% url 'new-chat-group' %}" class="mb-2 text-xl hover:text-green-0 transition-colors {% if request.path == '/new-chat/group/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-users"></i></a>
-                            <a href="{% url 'contacts' %}" class="mb-1 text-[1.35rem] hover:text-green-0 transition-colors {% if request.path == '/auth/contacts/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-volume-control-phone"></i></a>
+
+                            <a href="{% url 'contacts' %}" class="mb-1 text-[1.35rem] hover:text-green-0 transition-colors {% if request.path == '/contacts/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-volume-control-phone"></i></a>
+
+                            <a href="{% url 'notifications' %}" class="mb-1 text-xl hover:text-green-0 transition-colors {% if request.path == '/notifications/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-bell"></i></a>
+                          
                         </div>
                         <div class="flex flex-col">
-                            <a href="{% url 'profile' %}" class="mb-2 text-white flex items-center justify-center overflow-hidden w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if user.profile_pic == '' or request.path == '/auth/profile/' %} border-green-0 border-[2.2px] border-solid {% endif %}" {% if user.profile_pic != '' %} style="background-image: url('/media/{{user.profile_pic}}');" {% endif %}>
+                            <a href="{% url 'profile' %}" class="mb-2 text-white flex items-center justify-center overflow-hidden w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center {% if user.profile_pic == '' or request.path == '/profile/' %} border-green-0 border-[2.2px] border-solid {% endif %}" {% if user.profile_pic != '' %} style="background-image: url('/media/{{user.profile_pic}}');" {% endif %}>
                                 {% if user.profile_pic == '' %} {{user.first_name|slice:":1"}} {% endif %}
                             </a>
                             <a href="{% url 'logout' %}" class="b-1 text-[1.35rem] text-white hover:text-green-0 transition-colors"><i class="fa fa-sign-out"></i></a>

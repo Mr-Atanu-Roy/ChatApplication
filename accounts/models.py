@@ -9,8 +9,18 @@ from accounts.manager import Usermanager
 
 import uuid
 
-# Create your models here.
 
+#choices
+notification_type_choices = (
+    ("personal", "personal"),
+    ("group", "Group"),
+    ("application", "Application"),
+)
+
+
+
+
+# Create your models here.
 
 #custom user model
 class User(AbstractUser):
@@ -49,4 +59,27 @@ class UserContacts(BaseModel):
         verbose_name_plural = "User Contacts"
         ordering = ['created_at']
 
+
+
+class Notification(BaseModel):
+    message = models.CharField(max_length=655)
+    notification_type = models.CharField(choices=notification_type_choices, max_length=255)
+    notification_for = models.ForeignKey(User, on_delete=models.CASCADE)
+    seen = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.notification_for)
+    
+
+class FriendRequests(BaseModel):
+    request_for = models.ForeignKey(User, on_delete=models.CASCADE)
+    request_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend_request")
+    status = models.BooleanField(default=False)
+    
+
+    def __str__(self):
+        return str(self.request_for)
+    
+    class Meta:
+        verbose_name_plural = "Friend Requests"
 

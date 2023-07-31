@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from accounts.models import User, UserContacts
+from accounts.models import User, UserContacts, Notification, FriendRequests
 
 # Register your models here.
 
@@ -46,7 +46,29 @@ class UserContactsAdmin(admin.ModelAdmin):
             ),
         }),
     ]
+
+
+@admin.register(FriendRequests)
+class FriendRequestsAdmin(admin.ModelAdmin):
+    list_display = ('request_for', 'request_from', 'status', 'created_at', 'updated_at')
+    fieldsets = [
+        ("Details", {
+            "fields": (
+                ['request_for', 'request_from', 'status']
+            ),
+        }),
+    ]
     
     
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('notification_for', 'notification_type', 'seen', 'created_at', 'updated_at')
+    fieldsets = [
+        ("Notification Details", {
+            "fields": (
+                ['notification_for', 'notification_type', 'seen', 'message']
+            ),
+        }),
+    ]
     
     

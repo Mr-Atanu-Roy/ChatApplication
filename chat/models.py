@@ -42,7 +42,7 @@ class Group(BaseModel):
 class ChatMessages(BaseModel):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    message = models.CharField(max_length=650, blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
     message_type = models.CharField(choices=msg_type_choices, default="text", max_length=255)
     file = models.FileField(upload_to="chats/file/", null=True, blank=True, max_length=655)
     file_ext = models.CharField(blank=True, null=True, max_length=255)
