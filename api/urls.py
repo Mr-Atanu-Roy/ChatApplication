@@ -12,4 +12,9 @@ urlpatterns = [
     path("group/delete-group/", delete_group, name="delete_group"),
 
     path("msg/upload-file/", upload_msg_file, name="upload_msg_file"),
+
+    path("notifications/load/", load_notification, name="load_notification"),
+    path("friend_requests/load/", load_friend_requests, name="load_friend_requests"),
+    path("friend_requests/accept/", accept_friend_requests, name="accept_friend_requests"),
+    path("friend_requests/decline/", decline_friend_requests, name="decline_friend_requests"),
 ]

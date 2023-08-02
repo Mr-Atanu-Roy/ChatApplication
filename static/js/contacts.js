@@ -71,7 +71,7 @@ $(document).ready(function () {
           </div>
               `;
 
-            //reload page to see the changes
+            // reload page to see the changes
             setTimeout(function () {
               location.reload();
             }, 1600);

@@ -210,6 +210,7 @@ def user_contact(request):
 #user notifications view
 @login_required(login_url="/auth/login")
 def notifications(request):
-    pass
+    
+    return render(request, 'accounts/notifications.html')
 
 

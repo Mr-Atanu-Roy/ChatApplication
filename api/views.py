@@ -2,11 +2,12 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
-from accounts.models import User, UserContacts
+from accounts.models import User, UserContacts, FriendRequests
 from chat.models import Group, ChatMessages
 
 from accounts.utils import check_str_special, get_file_type
 from chat.model_func import get_user_chats
+from accounts.model_func import get_notifications, get_friend_requests
 
 
 # Create your views here.
@@ -80,7 +81,7 @@ def search_contact(request):
 @csrf_exempt
 def add_to_contact(request):
     '''
-    Handel the addition of contact to user account
+    Handel the addition friend request from request.user
     '''
 
 
@@ -109,10 +110,11 @@ def add_to_contact(request):
                         if get_user_contacts:
                             #check if user is already in user's contact
                             if not user in get_user_contacts.contacts.all():
-                                get_user_contacts.contacts.add(user)
-                                get_user_contacts.save()
+                                #create friend request instance
+                                new_fr_request = FriendRequests(request_for=user, request_from=request.user)
+                                new_fr_request.save()
 
-                                message = f"{phone} added to friend list"
+                                message = f"friend request send to {phone}"
                                 status = 201
                                 error = None
                             else:
@@ -385,3 +387,221 @@ def upload_msg_file(request):
     response["error"] = error
 
     return JsonResponse(response, safe=False)
+
+
+
+@login_required(login_url="/auth/login")
+def load_notification(request):
+    '''
+    API load get all notification of user
+    '''
+
+    response = {}
+    status = 0,
+    data = None,
+    error = "no data"
+
+    try:
+        # allow only GET request 
+        if request.method == "GET":
+            #get all the notifications
+            notification = get_notifications(request.user).values("id", "created_at", "message", "notification_type")[::-1]
+            
+            #if no notification exists return this
+            if len(notification) == 0:
+                error = ""
+                status = 204
+                
+            #return this if there is notifications
+            elif notification != None and len(notification) > 0:     
+                error = None
+                status = 200
+                data = [i for i in notification]
+
+        else:
+            status = 405
+            error = "only GET method is allowed"
+
+
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["data"] = data
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
+
+
+@login_required(login_url="/auth/login")
+def load_friend_requests(request):
+    '''
+    API load get all friend requests of user
+    '''
+
+    response = {}
+    status = 0,
+    data = None,
+    error = "no data"
+
+    try:
+        # allow only GET request 
+        if request.method == "GET":
+            # get notification type: received/send
+            notification_type = request.POST.get("notification_type", "received")
+
+            #get all the notifications
+            friend_requests = get_friend_requests(request.user, type=notification_type).values("id", "created_at", "status", "message", "seen")[::-1]
+
+            #if no friend_requests exists return this
+            if len(friend_requests) == 0:
+                error = ""
+                status = 204
+
+            #return this if there is friend_requests
+            elif friend_requests != None and len(friend_requests) > 0:     
+                error = None
+                status = 200
+                data = [i for i in friend_requests]
+
+
+        else:
+            status = 405
+            error = "only GET method is allowed"
+
+
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["data"] = data
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
+
+
+@csrf_exempt
+@login_required(login_url="/auth/login")
+def accept_friend_requests(request):
+    '''
+    API load accept friend requests of user
+    '''
+
+    response = {}
+    status = 0,
+    data = {
+        "update_status": False
+    }
+    error = "no data"
+
+    try:
+        # allow only POST request 
+        if request.method == "POST":
+            #get the request_id
+            request_id = request.POST.get("request_id").strip()
+
+            #validating fr_request
+            if request_id is not None and request_id != "":
+                #getting the friend request instance
+                fr_request = FriendRequests.objects.filter(id=request_id).first()
+
+                #check if fr_request exist
+                if fr_request is not None:
+                    fr_request.status = True
+                    fr_request.seen = True
+                    fr_request.save()
+
+                    status = 201
+                    error = None
+                    data = {
+                        "update_status": True
+                    }
+
+                else:
+                    status = 400
+                    error = "Invalid request"
+
+            else:
+                status = 400
+                error = "request_id is required"
+
+        else:
+            status = 405
+            error = "only POST method is allowed"
+
+
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["data"] = data
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
+
+
+
+@csrf_exempt
+@login_required(login_url="/auth/login")
+def decline_friend_requests(request):
+    '''
+    API load decline friend requests of user
+    '''
+
+    response = {}
+    status = 0,
+    data = {
+        "update_status": False
+    }
+    error = "no data"
+
+    try:
+        # allow only POST request 
+        if request.method == "POST":
+            #get the request_id
+            request_id = request.POST.get("request_id").strip()
+
+            #validating fr_request
+            if request_id is not None and request_id != "":
+                #getting the friend request instance
+                fr_request = FriendRequests.objects.filter(id=request_id).first()
+
+                #check if fr_request exist
+                if fr_request is not None:
+                    fr_request.seen = True
+                    fr_request.save()
+
+                    status = 201
+                    error = None
+                    data = {
+                        "update_status": True
+                    }
+
+                else:
+                    status = 400
+                    error = "Invalid request"
+
+            else:
+                status = 400
+                error = "request_id is required"
+
+        else:
+            status = 405
+            error = "only POST method is allowed"
+
+
+    except Exception as e:
+        print(e)
+        pass
+    
+    response["status"] = status
+    response["data"] = data
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
+
+
+

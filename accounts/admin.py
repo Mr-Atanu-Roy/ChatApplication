@@ -50,11 +50,11 @@ class UserContactsAdmin(admin.ModelAdmin):
 
 @admin.register(FriendRequests)
 class FriendRequestsAdmin(admin.ModelAdmin):
-    list_display = ('request_for', 'request_from', 'status', 'created_at', 'updated_at')
+    list_display = ('request_for', 'request_from', 'status', 'seen', 'created_at', 'updated_at')
     fieldsets = [
         ("Details", {
             "fields": (
-                ['request_for', 'request_from', 'status']
+                ['request_for', 'request_from', 'status', 'seen']
             ),
         }),
     ]

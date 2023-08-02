@@ -74,7 +74,9 @@ class Notification(BaseModel):
 class FriendRequests(BaseModel):
     request_for = models.ForeignKey(User, on_delete=models.CASCADE)
     request_from = models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend_request")
-    status = models.BooleanField(default=False)
+    message = models.CharField(max_length=355, null=True, blank=True)
+    status = models.BooleanField(default=False) #True->accepted False->Declined
+    seen = models.BooleanField(default=False)
     
 
     def __str__(self):

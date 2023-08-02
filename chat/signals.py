@@ -12,7 +12,7 @@ from accounts.utils import cache_delete
 @receiver(post_save, sender=Group)
 def Group_create_handler(sender, instance, created,  *args, **kwargs):
     '''
-    This signal will delete the cached data of user groups list when user creates his groups
+    This signal will delete the cached data of user groups list when user creates his groups. It will also notify members about group creation
     '''
 
     try:
@@ -25,6 +25,15 @@ def Group_create_handler(sender, instance, created,  *args, **kwargs):
                 key = f"{user.id}_groups_list"
                 #delete the cache
                 cache_delete(key)
+
+                #create notification instance about group creation excluding owner
+                if user != instance.owner:
+                    new_notification = Notification(
+                    notification_type="group", 
+                    notification_for = user,
+                    message = f"{instance.owner.first_name} {instance.owner.last_name} added you in {instance.name}"
+                    )
+                    new_notification.save()
 
     except Exception as e:
         print(e)
@@ -86,27 +95,33 @@ def ChatMessages_create_update_handler(sender, instance, created, *args, **kwarg
 
        #send notification when new instance is created
        else:
-        #send notification to each member
-        for member in instance.group.members.all():
-            #check the message type
-            if instance.message_type == "image":
-                notification_message = f"{instance.sender} uploaded a new image in {instance.group.name}"
-            elif instance.message_type == "video":
-                notification_message = f"{instance.sender} uploaded a new video in {instance.group.name}"
-            elif instance.message_type == "audio":
-                notification_message = f"{instance.sender} uploaded a new audio message in {instance.group.name}"
-            elif instance.message_type == "doc":
-                notification_message = f"{instance.sender} added a new message in {instance.group.name}"
-            else:
-                notification_message = f"{instance.sender} uploaded a new message in {instance.group.name}"
+        #getting group members
+        group_members = instance.group.members.all()
+        
+        #send notification to each member excluding sender
+        for member in group_members:
 
-            #create a notification instance
-            new_notification = Notification(
-                notification_type="group", 
-                notification_for = member,
-                message = notification_message
-            )
-            new_notification.save()
+            #check if member is not sender
+            if member != instance.sender:
+                #check the message type
+                if instance.message_type == "image":
+                    notification_message = f"{instance.sender.first_name} {instance.sender.last_name} uploaded a new image in {instance.group.name}"
+                elif instance.message_type == "video":
+                    notification_message = f"{instance.sender.first_name} {instance.sender.last_name} uploaded a new video in {instance.group.name}"
+                elif instance.message_type == "audio":
+                    notification_message = f"{instance.sender.first_name} {instance.sender.last_name} uploaded a new audio message in {instance.group.name}"
+                elif instance.message_type == "doc":
+                    notification_message = f"{instance.sender.first_name} {instance.sender.last_name} added a new document in {instance.group.name}"
+                else:
+                    notification_message = f"{instance.sender.first_name} {instance.sender.last_name} uploaded a new message in {instance.group.name}"
+
+                #create a notification instance
+                new_notification = Notification(
+                    notification_type="group", 
+                    notification_for = member,
+                    message = notification_message
+                )
+                new_notification.save()
 
     except Exception as e:
         print(e)

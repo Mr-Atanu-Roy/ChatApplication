@@ -43,33 +43,47 @@ def UserContact_update_handler(sender, instance, created, *args, **kwargs):
 
 
 
+
 @receiver(post_save, sender=FriendRequests)
-def FriendRequest_create_handler(sender, instance, created, *args, **kwargs):
+def FriendRequest_create_update_handler(sender, instance, created, *args, **kwargs):
     '''
-    This signal will add a notification instance whenever someone sends a friend request
+    This signal will add a notification instance whenever someone sends a friend request and update the message field of current FriendRequest instance
+
+    It will also add the contact to users contact if the user accepts the friend request and will send a notification to user who send the friend request
     '''
 
-    #execute only when instance is created
+
     if created:
+        #if created then delete send_friend_request cache of request_from user and receive_friend_request cache of request_for
+
+        cache_delete(f"{instance.request_from.id}_send_friend_requests_list")
+        cache_delete(f"{instance.request_for.id}_receive_friend_requests_list")
+
+        #updating message field
+        msg = f"You have a new friend request from: {instance.request_for.first_name} {instance.request_for.last_name}"
+
+        #set the message field of created FriendRequests instance
+        instance.message = msg
+        instance.save()
+
         #create a notification instance
         new_notification = Notification(
             notification_type="personal", 
             notification_for = instance.request_for,
-            message = f"You have a new friend request from: {instance.request_from}"
+            message = msg
         )
         new_notification.save()
+        
+
+    #execute when instance is updated
+    else:
+        #if updated then delete receive_friend_request cache of request_from user and send_friend_request cache of request_for
+
+        cache_delete(f"{instance.request_for.id}_send_friend_requests_list")
+        cache_delete(f"{instance.request_from.id}_receive_friend_requests_list")
 
 
-
-@receiver(post_save, sender=FriendRequests)
-def FriendRequest_accept_handler(sender, instance, created, *args, **kwargs):
-    '''
-    This signal will add the contact to users contact if the user accepts the friend request. It will also send a notification to user who send the friend request
-    '''
-
-
-    #execute only when instance is updated
-    if not created:
+        #adding to friend list
         #check if friend request is accepted
         if instance.status == True:
             #get the contact instance of both users
@@ -88,9 +102,18 @@ def FriendRequest_accept_handler(sender, instance, created, *args, **kwargs):
                 new_notification = Notification(
                     notification_type="personal", 
                     notification_for = instance.request_from,
-                    message = f"{instance.request_for} accepted your friend request. You both are now friends",
+                    message = f"{instance.request_for.first_name} {instance.request_for.last_name} accepted your friend request. You both are now friends",
                 )
                 new_notification.save()
 
 
+
+
+@receiver(post_save, sender=Notification)
+def Notification_create_update_handler(sender, instance, created, *args, **kwargs):
+    '''
+    This signal will each time a new notification is created/updated delete the notification cache of user for whom the notification has came
+    '''
+
+    cache_delete(f"{instance.notification_for.id}_notification_list")
 
