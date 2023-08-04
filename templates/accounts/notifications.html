@@ -8,19 +8,29 @@
 {% block body %}
 
 <div class="bg-slate-900 w-full h-screen flex items-center justify-center overflow-y-auto">
-    <div class="w-full md:max-w-2xl m-6 mt-20 bg-dark rounded-lg shadow-lg px-10 py-8 h-screen overflow-y-auto">
+    <div class="w-full md:max-w-2xl m-6 mt-20 bg-dark rounded-lg shadow-lg px-7 sm:px-10 py-8 h-screen overflow-y-auto">
         <h3 class="text-2xl text-white font-bold mb-8">My Notifications</h3>
 
         <div class="flex items-center justify-center rounded-md text-white font-bold mb-8">
-            <div id="all-notifications" class="rounded-md rounded-r-none w-1/2 py-2.5 text-center bg-dark border-light-dark border-2 border-solid cursor-pointer transition-colors duration-300 hover:bg-green-0-dark">
+            <div id="all-notifications" class="rounded-md rounded-r-none w-5/12 sm:w-1/2 py-2.5 text-center bg-dark border-light-dark border-2 border-solid cursor-pointer transition-colors duration-300 hover:bg-green-0-dark">
                 All <span class="hidden sm:inline">Notifications</span>
             </div>
-            <div id="friend-req-notifications" class="rounded-md rounded-l-none w-1/2 py-2.5 text-center bg-dark border-light-dark border-2 border-solid border-l-1 cursor-pointer transition-colors duration-300 hover:bg-green-0-dark">
+            <div id="friend-req-notifications" class="rounded-md rounded-l-none w-full sm:w-1/2 py-2.5 text-center bg-dark border-light-dark border-2 border-solid border-l-1 cursor-pointer transition-colors duration-300 hover:bg-green-0-dark">
                 Friend Requests
             </div>
         </div>
+        <div id="friend-req-type-box" class="pl-4 mb-4 items-center justify-start hidden">
+            <div class="flex items-start justify-start">
+                <label for="notif-received" class="text-white font-semibold text-sm sm:text-lg mr-1.5">Received</label>
+                <input name="friend-req-type" type="radio" class="rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-green-0-dark before:content[''] peer relative cursor-pointer appearance-none border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-0 checked:bg-green-0 checked:before:bg-green-0 hover:before:opacity-10" value="received" checked>
+            </div>
+            <div class="flex items-start justify-start ml-2.5 sm:ml-4">
+                <label for="notif-send" class="text-white font-semibold text-sm sm:text-lg mr-1.5">Send</label>
+                <input name="friend-req-type" type="radio" class="rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-green-0-dark before:content[''] peer relative cursor-pointer appearance-none border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-0 checked:bg-green-0 checked:before:bg-green-0 hover:before:opacity-10" value="send">
+            </div>
+        </div>
 
-        <div id="notifications" class="flex flex-col justify-center items-start px-4">
+        <div id="notifications" class="flex flex-col justify-center items-start mx-2.5 sm:px-4">
             <p class="text-gray-500 text-sm">Loading notifications.......</p>
         </div>
 

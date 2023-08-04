@@ -676,6 +676,16 @@ video {
   margin-bottom: auto;
 }
 
+.mx-2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.mx-2\.5 {
+  margin-left: 0.625rem;
+  margin-right: 0.625rem;
+}
+
 .mb-0 {
   margin-bottom: 0px;
 }
@@ -808,6 +818,14 @@ video {
   margin-top: 2rem;
 }
 
+.mr-5 {
+  margin-right: 1.25rem;
+}
+
+.mr-1\.5 {
+  margin-right: 0.375rem;
+}
+
 .block {
   display: block;
 }
@@ -886,6 +904,10 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-4 {
+  height: 1rem;
 }
 
 .max-h-64 {
@@ -971,6 +993,14 @@ video {
 
 .w-full {
   width: 100%;
+}
+
+.w-5\/12 {
+  width: 41.666667%;
+}
+
+.w-4 {
+  width: 1rem;
 }
 
 .max-w-\[135px\] {
@@ -1232,11 +1262,6 @@ video {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
-.bg-green-0-dark {
-  --tw-bg-opacity: 1;
-  background-color: rgb(1 133 105 / var(--tw-bg-opacity));
-}
-
 .bg-none {
   background-image: none;
 }
@@ -1358,6 +1383,16 @@ video {
   padding-bottom: 2rem;
 }
 
+.px-6 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.px-7 {
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+}
+
 .pb-20 {
   padding-bottom: 5rem;
 }
@@ -1392,6 +1427,10 @@ video {
 
 .pt-24 {
   padding-top: 6rem;
+}
+
+.pl-4 {
+  padding-left: 1rem;
 }
 
 .text-left {
@@ -1822,8 +1861,16 @@ video {
     margin-right: 0.75rem;
   }
 
+  .sm\:ml-4 {
+    margin-left: 1rem;
+  }
+
   .sm\:inline {
     display: inline;
+  }
+
+  .sm\:h-6 {
+    height: 1.5rem;
   }
 
   .sm\:w-1\/2 {
@@ -1845,6 +1892,10 @@ video {
   .sm\:w-fit {
     width: -moz-fit-content;
     width: fit-content;
+  }
+
+  .sm\:w-6 {
+    width: 1.5rem;
   }
 
   .sm\:max-w-md {
@@ -1870,6 +1921,16 @@ video {
   .sm\:px-3 {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
+  }
+
+  .sm\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .sm\:px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .sm\:text-lg {
@@ -1910,20 +1971,12 @@ video {
     width: 20rem;
   }
 
-  .md\:max-w-md {
-    max-width: 28rem;
-  }
-
-  .md\:max-w-lg {
-    max-width: 32rem;
-  }
-
-  .md\:max-w-xl {
-    max-width: 36rem;
-  }
-
   .md\:max-w-2xl {
     max-width: 42rem;
+  }
+
+  .md\:max-w-md {
+    max-width: 28rem;
   }
 
   .md\:grid-cols-2 {

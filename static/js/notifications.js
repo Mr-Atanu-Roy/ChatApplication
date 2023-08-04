@@ -70,10 +70,14 @@ function fetch_all_notification() {
 
 //func to fetch all friend requests
 function fetch_all_friend_requests() {
+    let notification_type = $("input[name='friend-req-type']:checked").val() != "send" ? "received" : "send";
 
     $.ajax({
         type: "get",
         url: "/api/friend_requests/load",
+        data: {
+            "notification_type": notification_type
+        },
         success: function (response) {
             let status = response.status;
             let error = response.error;
@@ -111,7 +115,13 @@ function fetch_all_friend_requests() {
 
                 $("#notifications").html(content);
             }else if(status == 204 && error == ""){
-                content = `<p class="text-gray-500 text-sm">You don't have any friend requests yet...</p>`
+                content = `<p class="text-gray-500 text-sm">You`; 
+                if(notification_type == "send"){
+                    content += ` have not send `;
+                }else{
+                    content += ` don't have `;
+                }
+                content += `any friend requests yet...</p>`
                 $("#notifications").html(content);
             }else{
                 content = `<p class="text-gray-500 text-sm">Failed to load friend requests...</p>`
@@ -145,12 +155,20 @@ $(document).ready(function () {
 
 
         //FRIEND REQUESTS TAB
-        //adding bg color to friend request tab when clicked
+        //adding bg color to friend request tab and making request type visible when clicked
         $("#friend-req-notifications").on("click", function (e) {
             $("#all-notifications").css("background", "#1C1C24");
             $("#friend-req-notifications").css("background", "#018569");
+            $("#friend-req-type-box").css("display", "flex");
             fetch_all_friend_requests();    
         });
+
+        //FRIEND REQUESTS TYPE TAB
+        //getting friend request when type is changed
+        $("#friend-req-type-box").on("change", function (e) {
+            fetch_all_friend_requests();    
+        });
+        
 
 
         //DECLINE FRIEND REQUEST
@@ -208,5 +226,5 @@ $(document).ready(function () {
     } catch (error) {
       console.log("error: ".error);
     }
-  });
+});
   

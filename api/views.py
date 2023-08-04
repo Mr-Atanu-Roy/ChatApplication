@@ -449,7 +449,7 @@ def load_friend_requests(request):
         # allow only GET request 
         if request.method == "GET":
             # get notification type: received/send
-            notification_type = request.POST.get("notification_type", "received")
+            notification_type = request.GET.get("notification_type", "received")
 
             #get all the notifications
             friend_requests = get_friend_requests(request.user, type=notification_type).values("id", "created_at", "status", "message", "seen")[::-1]
