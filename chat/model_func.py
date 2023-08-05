@@ -46,7 +46,7 @@ def get_user_group(user):
                     "name": group_name,
                     "link": link,
                     "group_pic": group_pic,
-                    "desc": group_desc if group_type == "personal" or group_desc != None else "",
+                    "desc": group_desc if group_type == "group" and group_desc != None else "",
                 }
 
                 group.append(data)
@@ -59,7 +59,6 @@ def get_user_group(user):
 
 #func to get group messages of group(=Group model instance)
 def get_group_messages(group):
-    group_msg_obj = ChatMessages.objects.filter(group=group).select_related("sender")
 
     key = f"{group.id}_chat_messages"
     cached_data = cache_get(key)
@@ -67,6 +66,7 @@ def get_group_messages(group):
     if cached_data:
         group_msg = cached_data
     else:
+        group_msg_obj = ChatMessages.objects.filter(group=group).select_related("sender")
         group_msg = group_msg_obj if len(group_msg_obj) > 0 else None
 
         #set cache

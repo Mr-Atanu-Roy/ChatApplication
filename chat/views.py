@@ -284,9 +284,8 @@ def chat_personal(request, id):
         #getting the personal group
         group = Group.objects.filter(type="personal", id=id).first()
 
-        other_user = group.members.all().first()
-        # other_user = group.members.all().exclude(request.user)
-        print(other_user)
+        #getting the other user in group
+        other_user = group.members.exclude(pk=request.user.pk).first()
 
         #check if group exists and user is a part of it
         if not group:

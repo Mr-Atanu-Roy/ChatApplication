@@ -32,7 +32,7 @@ function user_join(name, phone, user_phone) {
 }
 
 //func for handling user leave task for other user
-function user_leave(name, phone) {
+function user_leave(name) {
   //updating session
   online_users_num = parseInt(sessionStorage.getItem("online_users_num")) - 1;
   sessionStorage.setItem("online_users_num", online_users_num);
@@ -194,9 +194,16 @@ $(document).ready(function () {
                 if(PHONE == phone){
                   content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
                 }
-                  content += `<a href="${msg}" target="_blank" class="flex items-center justify-center text-slate-900 font-bold text-xs">
-                            <img src="${msg}" alt="${msg_type}" class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" loading="lazy">
-                        </a>
+                content += `
+                      <div class="flex items-center justify-center text-slate-900 font-bold text-xs relative">
+                          <img src="${msg}" alt="${msg_type}" class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" loading="lazy">
+                          <div class="opacity-0 h-full w-full absolute top-0 left-0 transition-all duration-300 backdrop-brightness-50 flex items-center justify-center hover:opacity-100">
+                              <a target="_blank" href="${msg}" download="${msg}" class="text-2xl text-white text-center">
+                                  <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                                  <p class="text-white text-base">Download</p>
+                              </a>
+                          </div>
+                      </div>
                     </div>
                     <p class="text-gray-300 text-xs text-right">${time}</p>
                 </div>
@@ -294,11 +301,11 @@ $(document).ready(function () {
             if (PHONE == phone) {
               content += `<p class="mr-14 bg-green-0 rounded w-fit py-1 px-1.5 text-slate-900 font-bold mb-2 text-xs">you</p>`;
             }        
-              content += `<a target="_blank" href="${msg}" class="flex items-center justify-center text-slate-900 font-bold text-xs">
+              content += `<div class="flex items-center justify-center text-slate-900 font-bold text-xs">
                         <audio class="w-56 xs:w-64 sm:w-72 md:w-80" controls>
                             <source src="${msg}" type="audio/${data.file_ext}" loading="lazy">
                         </audio>
-                    </a>
+                    </div>
                 </div>
                 <p class="text-gray-300 text-xs text-right">${time}</p>
             </div>
@@ -396,7 +403,7 @@ $(document).ready(function () {
         user_join(data.username, data.phone, PHONE);
       } else if (data.type == "user.leave") {
         //new user leaves and others get notified about it
-        user_leave(data.username, data.phone);
+        user_leave(data.username);
       } else {
         console.log("error: Invalid message type");
       }

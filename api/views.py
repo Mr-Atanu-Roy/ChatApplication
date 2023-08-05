@@ -187,7 +187,7 @@ def search_chats(request):
                         data.append({
                             "url": f"/chat/{chat.type}/{chat.id}",
                             "name": group_name,
-                            "desc": group_desc if group_type == "personal" or group_desc != None else "",
+                            "desc": group_desc if group_type == "group" and group_desc != None else "",
                             "chat_pic": f"/media/{group_pic}",
                         })
 

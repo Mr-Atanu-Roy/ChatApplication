@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.core.cache import cache
-# from django.views.decorators.cache import cache_page
 
 import uuid
 import datetime
@@ -125,3 +124,44 @@ def get_file_type(ext):
             
     
     return None
+
+
+#func to generate notification message based on group type
+def draft_notification_msg(instance):
+    print(type(instance))
+    print(instance.sender.first_name)
+    print(instance.message_type)
+    msg = f"{instance.sender.first_name} {instance.sender.last_name}"
+
+    #check the group type
+    if instance.group.type == "personal":
+        msg += " send a new "
+        #check the message type
+        if instance.message_type == "image":
+            msg += "image"
+        elif instance.message_type == "video":
+            msg += "video"
+        elif instance.message_type == "audio":
+            msg += "audio message"
+        elif instance.message_type == "doc":
+            msg += "new document"
+        else:
+            msg += "message"
+        msg += " to you"
+    else:
+        msg += " uploaded a new "
+        #check the message type
+        if instance.message_type == "image":
+            msg += "image"
+        elif instance.message_type == "video":
+            msg += "video"
+        elif instance.message_type == "audio":
+            msg += "audio message"
+        elif instance.message_type == "doc":
+            msg += "new document"
+        else:
+            msg += "message"
+        msg += f" in {instance.group.name} Group"
+
+    return msg
+
