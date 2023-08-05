@@ -8,8 +8,10 @@
 {% block body %}
 
 <div class="bg-slate-900 w-full h-screen flex items-center justify-center overflow-y-auto py-10">
-    <form {% if request.user == group.owner %}method="post" action=""{%endif%} id="create-group-form" class="w-full mx-3.5 sm:mx-24 md:w-3/4 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 lg:w-1/2 my-auto overflow-y-auto" enctype="multipart/form-data">
+    <form {% if request.user == group.owner %}method="post" action="" enctype="multipart/form-data"{%endif%} id="create-group-form" class="w-full mx-3.5 sm:mx-24 md:w-3/4 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 lg:w-1/2 my-auto overflow-y-auto">
+        {% if request.user == group.owner %}
         {% csrf_token %}
+        {%endif%} 
 
         <h3 class="text-2xl text-white font-bold mb-8">Group Settings</h3>
         <div>
@@ -106,22 +108,25 @@
 
             {% else %}
             {% for member in group.members.all %}
-            <a {% if member in contacts and member != request.user %}href="/chat/personal/p/{{member.id}}"{% endif %} class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" {% if member not in contacts and member != request.user %} id="add-contact-btn" data-phone="{{member.phone}}" {% endif %}>
-                <div class="grid grid-cols-6 place-items-center">
-                    <div class="text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if member.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if member.profile_pic != '' %} style="background-image: url('/media/{{member.profile_pic}}');" {% endif %}>
+            <div class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
+                <a href="/chat/personal/p/{{member.id}}" class="w-full flex items-center justify-start">
+                    <div class="mr-3.5 text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if member.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if member.profile_pic != '' %} style="background-image: url('/media/{{member.profile_pic}}');" {% endif %}>
                         {% if member.profile_pic == '' %} {{member.first_name|slice:":1"}} {% endif %}
                     </div>
-                    <div class="ml-5 col-span-5 w-full overflow-hidden text-white">
-                        <p class="font-bold text-lg">{{member.first_name}} {{member.last_name}}</p>
+                    <div>
+                        <p class="font-bold text-lg text-white">{{member.first_name}} {{member.last_name}}</p>
                         <p class="font-bold text-xs text-gray-400">
                             {{member.phone}} 
-                            {% if member not in contacts and member != request.user %}
-                              is not in your friend list. Click to add
-                            {% endif %}
                         </p>
                     </div>
-                </div>
-            </a>
+                </a>
+                {% if member not in contacts and member != request.user %}
+                    <div class="flex items-center justify-center z-50">
+                        <i class="fa fa-user-plus text-xl text-white hover:text-green-0-dark transition-colors duration-200 cursor-pointer" id="add-contact-btn" data-phone="{{member.phone}}"></i>
+                    </div>
+                {% endif %}
+            </div>
+            
             {% endfor %}
             {% endif %}
         </div>
@@ -133,5 +138,5 @@
 
 {% block scripts %}
 {{group.id|json_script:"group_id"}}
-<script src="{% static 'js/chat_settings.js' %}"></script>
+<script src="{% static 'js/group_chat_setting.js' %}"></script>
 {% endblock scripts %}

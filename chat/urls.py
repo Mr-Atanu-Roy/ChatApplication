@@ -13,6 +13,7 @@ urlpatterns = [
 
     path("chat/personal/p/<user_id>", chat_personal_get, name="chat-personal-get"),
     path("chat/personal/<id>", chat_personal, name="chat-personal"),
+    path("settings/personal/<id>", chat_personal_settings, name="chat-personal-settings"),
 
     #views from accounts app
     path("profile/", profile, name="profile"),

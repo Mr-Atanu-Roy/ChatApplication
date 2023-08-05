@@ -128,9 +128,6 @@ def get_file_type(ext):
 
 #func to generate notification message based on group type
 def draft_notification_msg(instance):
-    print(type(instance))
-    print(instance.sender.first_name)
-    print(instance.message_type)
     msg = f"{instance.sender.first_name} {instance.sender.last_name}"
 
     #check the group type

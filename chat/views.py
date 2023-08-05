@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 
 from accounts.models import User
-from chat.models import Group, ChatMessages
+from chat.models import Group
 
 from accounts.utils import check_str_special, cache_get, cache_set
 from accounts.model_func import get_user_contacts
@@ -128,7 +128,7 @@ def chat_group(request, id):
         group = Group.objects.filter(id=id, type="group").first()
 
         #check if group exists and user is a part of it
-        if not group:
+        if group is None:
             return HttpResponse("<h3>INVALID GROUP</h3>")
         if request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
@@ -163,7 +163,7 @@ def chat_group_settings(request, id):
         contacts = get_user_contacts(request.user)
 
         #check if group exists and user is a part of it
-        if not group or request.user not in group.members.all():
+        if group is None or request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
         
 
@@ -225,7 +225,8 @@ def chat_group_settings(request, id):
 
     context["group"] = group
     context["contacts"] = contacts
-    return render(request, 'chat/chat-settings.html', context)
+    
+    return render(request, 'chat/group-chat-setting.html', context)
 
 
 
@@ -284,12 +285,18 @@ def chat_personal(request, id):
         #getting the personal group
         group = Group.objects.filter(type="personal", id=id).first()
 
-        #getting the other user in group
-        other_user = group.members.exclude(pk=request.user.pk).first()
+        #check if group exists
+        if group is not None:
+            #getting the other user in group
+            other_user = group.members.exclude(pk=request.user.pk).first()
 
-        #check if group exists and user is a part of it
-        if not group:
+            if other_user is None:
+                return HttpResponse("<h3>INVALID GROUP</h3>")
+
+        else:
             return HttpResponse("<h3>INVALID GROUP</h3>")
+
+        #check if user is a part of group
         if request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
         
@@ -307,5 +314,44 @@ def chat_personal(request, id):
     context["other_user"] = other_user
     return render(request, "chat/personal_chats.html", context)
 
+
+
+
+@login_required(login_url="/auth/login")
+def chat_personal_settings(request, id):
+    '''
+    Handel the chat group settings page
+    '''
+
+    context = {}
+    group = other_user = None
+    is_friends = False
+
+    try:
+        group = Group.objects.filter(id=id).first()
+        #get the group instance from id
+        #get user contacts
+        contacts = get_user_contacts(request.user)
+
+        #check if group exists and user is a part of it
+        if not group or request.user not in group.members.all():
+            return HttpResponse("<h3>INVALID GROUP</h3>")
+        
+        #getting the other user in group
+        other_user = group.members.exclude(pk=request.user.pk).first()
+        #check if both users are friends
+        if other_user in contacts:
+            is_friends = True
+
+    except Exception as e:
+        print(e)
+        pass
+
+
+    context["group"] = group
+    context["other_user"] = other_user
+    context["is_friends"] = is_friends
+
+    return render(request, 'chat/personal-chat-setting.html', context)
 
 

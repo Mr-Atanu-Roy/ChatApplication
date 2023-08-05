@@ -100,14 +100,15 @@ function fetch_all_friend_requests() {
                                         content += `<button class="text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">accepted</button>
                                         <div class="flex items-start justify-between">`;
                                     }else if(data[index].status == false && data[index].seen == true){
-                                        content += `<button class="mr-2.5 text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">declined</button>
-                                        <div class="flex items-start justify-between">`;
+                                        content += `<button class="mr-2.5 text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">declined</button>`;
                                     }else{
-                                        content += `<button id="accept-request" class="mr-4 text-white font-semibold py-1 px-3 rounded transition-colors capitalize duration-300 bg-green-0 hover:bg-green-0-dark" data-id="${data[index].id}">Accept</button>
-                                        <button id="decline-request" class="text-white font-semibold py-1 px-3 rounded transition-colors duration-300 capitalize bg-red-600 hover:bg-red-700" data-id="${data[index].id}">Decline</button>`;
+                                        content += `<div class="flex items-start justify-between">
+                                        <button id="accept-request" class="mr-4 text-white font-semibold py-1 px-3 rounded transition-colors capitalize duration-300 bg-green-0 hover:bg-green-0-dark" data-id="${data[index].id}">Accept</button>
+                                        <button id="decline-request" class="text-white font-semibold py-1 px-3 rounded transition-colors duration-300 capitalize bg-red-600 hover:bg-red-700" data-id="${data[index].id}">Decline</button>
+                                        </div>`;
                                     }
                         content += `</div>
-                            </div>
+                        </div>
                         </div>
                     </div>
                     `;                

@@ -1,0 +1,55 @@
+{% extends "../blocks/chat_base.html" %}
+
+{% load static %}
+
+{% block title %}{{other_user.first_name}} Profile | Conversat{% endblock title %}
+
+
+{% block body %}
+
+<div class="bg-slate-900 w-full h-screen flex items-center justify-center overflow-y-auto py-10">
+    <div id="create-group-form" class="w-full mx-3.5 sm:mx-24 md:w-3/4 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 lg:w-1/2 my-auto overflow-y-auto">
+        <div>
+            <div class="flex flex-col items-center justify-center">
+                <div class="flex flex-col items-center justify-center">
+                    <div class="text-5xl font-bold text-white border-green-0 border-[3px] border-solid overflow-hidden w-32 h-32 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if contact.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if contact.profile_pic != '' %} style="background-image: url('/media/{{other_user.profile_pic}}');" {% endif %}>
+                        {% if other_user.profile_pic == '' %} {{other_user.first_name|slice:":1"}} {% endif %}
+                    </div>
+                </div>
+                <div class="text-center mt-1">
+                    <h3 class="text-white font-bold">{{other_user.first_name}} {{other_user.last_name}}</h3>
+                    <p class="text-gray-500 text-[0.81rem]">{{other_user.phone}}</p>
+                </div>
+            </div>
+
+            <div class="px-3 my-6 flex items-end justify-evenly">
+                <div class="text-center max-w-[135px]">
+                    {% if is_friends %}
+                        <div class="flex justify-center items-center">
+                            <img src="{% static 'images/icons/friends.png' %}" class="mb-1.5 w-12 rounded-full" alt="friends">
+                        </div>
+                        <p class="text-green-0 capitalize text-xs">you both are friends</p>
+                        {% else %}
+                        <div>
+                            <i class="fa fa-user-plus mb-1.5 text-xl text-white hover:text-green-0-dark transition-colors duration-200 cursor-pointer" id="add-contact-btn" data-phone="{{other_user.phone}}"></i>
+                        </div>
+                        <p class="text-green-0 capitalize text-xs">add friend</p>
+                        {% endif %}
+                </div>	
+                <div class="text-center max-w-[145px]">
+                    <i class="fa fa-clock-o text-xl text-red-600 mb-1.5"></i>
+                    <p class="text-green-0 capitalize text-xs">Conversation Started: {{group.created_at|date:"d.m.y"}}</p>
+                </div>	
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock body %}
+
+{% block scripts %}
+<script src="{% static 'js/personal_chat_setting.js' %}"></script>
+{% endblock scripts %}

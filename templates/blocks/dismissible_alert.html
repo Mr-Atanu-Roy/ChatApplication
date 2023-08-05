@@ -1,6 +1,6 @@
 {% if messages %}
 {% for message in messages %}
-    <div id="alert-box" class="rounded fixed bg-white top-8 right-8 flex items-center h-16 border border-gray-300 pr-4 mb-1.5 max-w-[16rem] xs:max-w-xs sm:max-w-md w-full shadow-lg" style="z-index: 99999999999999999999;">
+    <div id="alert-box" class="rounded fixed bg-white top-8 right-8 flex items-center h-16 border border-gray-300 pr-4 mb-1.5 max-w-[18rem] xs:max-w-xs sm:max-w-md w-full shadow-lg" style="z-index: 99999999999999999999;">
         <div class="flex items-center justify-center {% if message.tags %}{{message.tags}}{% endif %} w-16 h-full">
             <i class="fa fa-exclamation-triangle"></i>
         </div>
