@@ -149,6 +149,7 @@ $(document).ready(function () {
         //adding bg color to all notification tab when clicked
         $("#all-notifications").on("click", function (e) {
             $("#friend-req-notifications").css("background", "#1C1C24");
+            $("#friend-req-type-box").css("display", "none");
             $("#all-notifications").css("background", "#018569");
             fetch_all_notification();
         });

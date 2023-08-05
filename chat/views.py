@@ -125,7 +125,7 @@ def chat_group(request, id):
     try:
         
         #get the group instance from id
-        group = Group.objects.filter(id=id).first()
+        group = Group.objects.filter(id=id, type="group").first()
 
         #check if group exists and user is a part of it
         if not group:
@@ -133,17 +133,8 @@ def chat_group(request, id):
         if request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
         
-        key = f"{group.id}_chat_messages"
-        cached_data = cache_get(key)
-        #check if cached data exists
-        if cached_data:
-            group_msg = cached_data
-        else:
-            #get group messages
-            group_msg = get_group_messages(group)
-
-            #set cache
-            cache_set(key, group_msg)
+        #get group messages
+        group_msg = get_group_messages(group)
 
         
     except Exception as e:
@@ -235,4 +226,87 @@ def chat_group_settings(request, id):
     context["group"] = group
     context["contacts"] = contacts
     return render(request, 'chat/chat-settings.html', context)
+
+
+
+@login_required(login_url="/auth/login")
+def chat_personal_get(request, user_id):
+    '''
+    This view handel the task of filtering the personal group of user having id=user_id. If group exists redirect to personal chat page. If group doesn't exists then create a personal group with that user and redirect to personal chat page
+    '''
+
+    try:
+        #getting the user with id=user_id
+        user = User.objects.get(id=user_id)
+
+        #check if user exists
+        if user is not None:
+            #getting the personal group where only request.user and user_id is member
+            group = Group.objects.filter(type="personal", members=request.user).filter(members=user).first()
+
+            #check if group exists
+            if group is not None:
+                return redirect(f"/chat/personal/{group.id}")
+            else:
+                 #setting up group name
+                group_name = f"{request.user.first_name} {request.user.last_name}|{user.first_name} {user.last_name}"
+
+                #create a new personal group with user
+                new_group = Group(type="personal", name=group_name, owner=request.user)
+                new_group.save()
+                #add members to group
+                new_group.members.add(request.user, user)
+                new_group.save()
+
+                # redirect to personal chat page 
+                return redirect(f"/chat/personal/{new_group.id}")
+
+    except Exception as e:
+        print(e)
+        pass
+
+
+    return HttpResponse("<h3>SOMETHING WENT WRONG</h3>")
+
+
+
+
+@login_required(login_url="/auth/login")
+def chat_personal(request, id):
+    '''
+    This view handel the personal chat page
+    '''
+
+    context = {}
+    group = group_msg = other_user = None
+
+    try:
+        #getting the personal group
+        group = Group.objects.filter(type="personal", id=id).first()
+
+        other_user = group.members.all().first()
+        # other_user = group.members.all().exclude(request.user)
+        print(other_user)
+
+        #check if group exists and user is a part of it
+        if not group:
+            return HttpResponse("<h3>INVALID GROUP</h3>")
+        if request.user not in group.members.all():
+            return HttpResponse("<h3>INVALID GROUP</h3>")
+        
+        #get group messages
+        group_msg = get_group_messages(group)
+    
+
+    except Exception as e:
+        print(e)
+        pass
+
+
+    context["group_msg"] = group_msg
+    context["group"] = group
+    context["other_user"] = other_user
+    return render(request, "chat/personal_chats.html", context)
+
+
 

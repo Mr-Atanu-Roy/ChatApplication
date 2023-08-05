@@ -2,6 +2,7 @@ from chat.models import Group, ChatMessages
 
 from accounts.utils import cache_get, cache_set
 
+
 #func to get user group
 def get_user_group(user):
     '''
@@ -20,23 +21,32 @@ def get_user_group(user):
         group = []
         
         #get groups where user is a member
-        # get_groups = Group.objects.filter(members__in=[user])
         get_groups = get_user_chats(user)
         group_len = len(get_groups) if get_groups != None else 0
 
         if(group_len > 0):
             for grp in get_groups:
-                group_name = grp.name
-                group_pic = grp.group_pic
+                #get the group info
+                group_type = grp.type
                 group_desc = grp.description
-                link = f"/chat/group/{grp.id}"
+                link = f"/chat/{group_type}/{grp.id}"
+                
+                #if group is personal then set the name and pic as per the other user
+                if group_type == "personal":
+                    mem = grp.members.exclude(id=user.id).first()
+                    group_pic = None if str(mem.profile_pic) == "" else str(mem.profile_pic)
+                    group_name = f"{mem.first_name} {mem.last_name}"
+                else:
+                    group_pic = str(grp.group_pic)
+                    group_name = grp.name
 
                 #append the data of group in a dict and then in a list
                 data = {
+                    "type": group_type,
                     "name": group_name,
                     "link": link,
                     "group_pic": group_pic,
-                    "desc": group_desc if group_desc != None else ""
+                    "desc": group_desc if group_type == "personal" or group_desc != None else "",
                 }
 
                 group.append(data)
@@ -49,9 +59,18 @@ def get_user_group(user):
 
 #func to get group messages of group(=Group model instance)
 def get_group_messages(group):
-    group_msg = ChatMessages.objects.filter(group=group).select_related("sender")
-    if len(group_msg) == 0:
-        group_msg = None
+    group_msg_obj = ChatMessages.objects.filter(group=group).select_related("sender")
+
+    key = f"{group.id}_chat_messages"
+    cached_data = cache_get(key)
+    #check if cached data exists
+    if cached_data:
+        group_msg = cached_data
+    else:
+        group_msg = group_msg_obj if len(group_msg_obj) > 0 else None
+
+        #set cache
+        cache_set(key, group_msg)
 
     return group_msg
 

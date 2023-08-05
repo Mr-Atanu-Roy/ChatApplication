@@ -161,20 +161,34 @@ def search_chats(request):
             
             #check if query is valid char
             if not check_str_special(query):
-
+                #get the chat groups of user
                 chats = get_user_chats(request.user, query)
 
                 #check if any chat is found
                 if chats is not None:
+                    chats = chats.reverse()  #reverse to order by -created by
                     data = []
 
                     #iterate over each item and add to data as dict
                     for chat in chats:
+                        #getting group info
+                        group_type = chat.type
+                        group_desc = chat.description
+
+                        #if group is personal then set the name and pic as per the other user
+                        if group_type == "personal":
+                            mem = chat.members.exclude(id=request.user.id).first()
+                            group_pic = None if str(mem.profile_pic) == "" else str(mem.profile_pic)
+                            group_name = f"{mem.first_name} {mem.last_name}"
+                        else:
+                            group_pic = str(chat.group_pic)
+                            group_name = chat.name
+
                         data.append({
                             "url": f"/chat/{chat.type}/{chat.id}",
-                            "name": chat.name,
-                            "desc": chat.description,
-                            "chat_pic": f"/media/{chat.group_pic}",
+                            "name": group_name,
+                            "desc": group_desc if group_type == "personal" or group_desc != None else "",
+                            "chat_pic": f"/media/{group_pic}",
                         })
 
                     status = 200

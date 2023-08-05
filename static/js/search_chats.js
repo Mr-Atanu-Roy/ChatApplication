@@ -28,8 +28,19 @@ $(document).ready(function () {
                                 content += `
                                 <a href="${data[index]["url"]}"
                                     class="mx-1.5 md:mx-3.5 lg:mx-0 p-3 grid grid-cols-6 place-items-center hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
-                                    <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center"
-                                        style="background-image: url('${data[index]["chat_pic"]}');"></div>
+                                    <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center text-white text-3xl flex items-center justify-center `;
+                                    if(data[index]["chat_pic"].includes("media/None")){
+                                        content += ` border-green-0 border-[3.1px] border-solid`;
+                                    }
+                                    content += `" `;
+                                    if(!data[index]["chat_pic"].includes("media/None")){
+                                     content += `style="background-image: url('${data[index]["chat_pic"]}');"`;
+                                    }
+                                    content += `>`;
+                                    if(data[index]["chat_pic"].includes("media/None")){
+                                        content += `${data[index]["name"][0]}`;
+                                    }
+                                    content += `</div>
                                     <div class="ml-3.5 lg:ml-3 col-span-5 w-full overflow-hidden text-white pl-3.5 lg:pl-5 2xl:p-0">
                                         <p class="font-bold text-lg">${data[index]["name"]}</p>
                                         <p class="font-bold text-xs text-gray-400">${data[index]["desc"] == null ? "" : data[index]["desc"]}</p>

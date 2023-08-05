@@ -106,7 +106,7 @@
 
             {% else %}
             {% for member in group.members.all %}
-            <div class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" {% if member not in contacts and member != request.user %} id="add-contact-btn" data-phone="{{member.phone}}" {% endif %}>
+            <a {% if member in contacts and member != request.user %}href="/chat/personal/p/{{member.id}}"{% endif %} class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" {% if member not in contacts and member != request.user %} id="add-contact-btn" data-phone="{{member.phone}}" {% endif %}>
                 <div class="grid grid-cols-6 place-items-center">
                     <div class="text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if member.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if member.profile_pic != '' %} style="background-image: url('/media/{{member.profile_pic}}');" {% endif %}>
                         {% if member.profile_pic == '' %} {{member.first_name|slice:":1"}} {% endif %}
@@ -121,7 +121,7 @@
                         </p>
                     </div>
                 </div>
-            </div>
+            </a>
             {% endfor %}
             {% endif %}
         </div>
