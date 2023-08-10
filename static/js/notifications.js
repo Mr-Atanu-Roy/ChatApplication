@@ -110,6 +110,7 @@ function fetch_all_friend_requests() {
                         content += `</div>
                         </div>
                         </div>
+                        </div>
                     </div>
                     `;                
                 }
