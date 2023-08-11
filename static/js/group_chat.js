@@ -68,8 +68,12 @@ function user_list(online_users_num = 0, users) {
 $(document).ready(function () {
   try {
     //scroll to bottom
-    location.href = "#";
     location.href = "#end";
+
+    //scroll to bottom btn
+    $("#scroll_to_bottom_btn").on("click", function () {
+        location.href = "#end";            
+    });
 
     //getting current user phone
     const PHONE = JSON.parse(
@@ -96,10 +100,11 @@ $(document).ready(function () {
         let name = data.user_name;
         let phone = data.user_phone;
         let user_pic = data.user_pic;
-        let time = data.time;
 
         //do this if message type is text
         if (msg_type == "text") {
+          let time = data.time;
+
           let content = `
             <div class="my-2 w-full flex items-center `;
                 if (PHONE == phone) {
@@ -158,190 +163,100 @@ $(document).ready(function () {
             //scroll to bottom
             location.href = "#end";
 
-        }else if(msg_type == "img"){
-            let content = `
-            <div class="my-2 w-full flex items-center `;
-              if (PHONE == phone) {
-                content += `justify-end`;
-              }
-                content += `">
-                <div class="flex flex-col">`;
+        }else if(msg_type == "file"){
+          //for file messages
 
-                if (PHONE != phone) {
-                content += `<div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center`;
-                  if(user_pic == "/media/"){
-                    content += ` border-green-0 border-[2.2px] border-solid flex items-center justify-center`;
+          //check if at least one file is given
+          if(msg.length > 0){
+
+            //iterate over each array elements
+            msg.forEach(obj => {
+              //getting each file type
+              let obj_msg_type = obj["file_type"];
+
+              if(obj_msg_type == "img"){
+                  let content = `
+                  <div class="my-2 w-full flex items-center `;
+                    if (PHONE == phone) {
+                      content += `justify-end`;
+                    }
+                      content += `">
+                      <div class="flex flex-col">`;
+      
+                      if (PHONE != phone) {
+                      content += `<div class="text-white w-7 h-7 rounded-full bg-cover bg-no-repeat bg-center`;
+                        if(user_pic == "/media/"){
+                          content += ` border-green-0 border-[2.2px] border-solid flex items-center justify-center`;
+                        }
+                        content += `"`;
+                          if (user_pic != "/media/") {
+                            content += ` style="background-image: url('${user_pic}');"`;
+                          }
+                          content += `>`;
+                          if (user_pic == "/media/") {
+                            content += `${name[0]}`;
+                          }
+      
+                          content += `</div>`;
+                      }
+                          
+                      content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `;
+                      if (PHONE == phone) {
+                        content += `rounded-tr-none`;
+                      } else {
+                        content += `rounded-tl-none`;
+                      }
+                      content += `">`;
+                      if(PHONE == phone){
+                        content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
+                      }
+                      content += `
+                            <div class="flex items-center justify-center text-slate-900 font-bold text-xs relative">
+                                <img src="${obj["file_url"]}" alt="${obj_msg_type}" class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" loading="lazy">
+                                <div class="opacity-0 h-full w-full absolute top-0 left-0 transition-all duration-300 backdrop-brightness-50 flex items-center justify-center hover:opacity-100">
+                                    <a target="_blank" href="${obj["file_url"]}" download="${obj["file_url"]}" class="text-2xl text-white text-center">
+                                        <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
+                                        <p class="text-white text-base">Download</p>
+                                    </a>
+                                </div>
+                            </div>
+                          </div>
+                          <p class="text-gray-300 text-xs text-right">${obj["created_at"]}</p>
+                      </div>
+                  </div>
+                  `;
+                  //append to chat messages at end
+                  $("#group-chat-msg").append(content);
+      
+                  //scroll to bottom
+                  location.href = "#end";
+      
+              }else if(obj_msg_type == "video"){
+                content = `
+                <div class="my-2 w-full flex items-center `;
+                  if (PHONE == phone) {
+                    content += `justify-end`;
                   }
-                  content += `"`;
+                  content += `">
+                  <div class="flex flex-col">`;
+                  if (PHONE != phone) {
+                    content += `
+                      <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `;
+                    if (user_pic == "/media/") {
+                      content += `border-green-0 border-[2.2px] border-solid `;
+                    }
+                    content += `"`;
                     if (user_pic != "/media/") {
-                      content += ` style="background-image: url('${user_pic}');"`;
+                      content += `style="background-image: url('${user_pic}');"`;
                     }
                     content += `>`;
                     if (user_pic == "/media/") {
                       content += `${name[0]}`;
                     }
-
+      
                     content += `</div>`;
-                }
-                    
-                content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `;
-                if (PHONE == phone) {
-                  content += `rounded-tr-none`;
-                } else {
-                  content += `rounded-tl-none`;
-                }
-                content += `">`;
-                if(PHONE == phone){
-                  content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
-                }
-                content += `
-                      <div class="flex items-center justify-center text-slate-900 font-bold text-xs relative">
-                          <img src="${msg}" alt="${msg_type}" class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" loading="lazy">
-                          <div class="opacity-0 h-full w-full absolute top-0 left-0 transition-all duration-300 backdrop-brightness-50 flex items-center justify-center hover:opacity-100">
-                              <a target="_blank" href="${msg}" download="${msg}" class="text-2xl text-white text-center">
-                                  <i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>
-                                  <p class="text-white text-base">Download</p>
-                              </a>
-                          </div>
-                      </div>
-                    </div>
-                    <p class="text-gray-300 text-xs text-right">${time}</p>
-                </div>
-            </div>
-            `;
-            //append to chat messages at end
-            $("#group-chat-msg").append(content);
-
-            //scroll to bottom
-            location.href = "#end";
-
-        }else if(msg_type == "video"){
-          content = `
-          <div class="my-2 w-full flex items-center `;
-            if (PHONE == phone) {
-              content += `justify-end`;
-            }
-            content += `">
-            <div class="flex flex-col">`;
-            if (PHONE != phone) {
-              content += `
-                <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `;
-              if (user_pic == "/media/") {
-                content += `border-green-0 border-[2.2px] border-solid `;
-              }
-              content += `"`;
-              if (user_pic != "/media/") {
-                content += `style="background-image: url('${user_pic}');"`;
-              }
-              content += `>`;
-              if (user_pic == "/media/") {
-                content += `${name[0]}`;
-              }
-
-              content += `</div>`;
-            }
-            content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `; 
-            if (PHONE == phone) {
-              content += `rounded-tr-none`;
-            } else {
-              content += `rounded-tl-none`;
-            }
-            content += `">`;
-            if (PHONE == phone) {
-              content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
-            }        
-              content += `<a target="_blank" href="${msg}" class="flex items-center justify-center text-slate-900 font-bold text-xs">
-                        <video class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" controls>
-                            <source src="${msg}" type="video/${data.file_ext}" loading="lazy">
-                        </video>
-                    </a>
-                </div>
-                <p class="text-gray-300 text-xs text-right">${time}</p>
-            </div>
-          </div>`;
-
-        //append to chat messages at end
-        $("#group-chat-msg").append(content);
-        
-        //scroll to bottom
-        location.href = "#end";
-
-        }else if(msg_type == "audio"){
-          content = `
-          <div class="my-2 w-full flex items-center `;
-            if (PHONE == phone) {
-              content += `justify-end`;
-            }
-            content += `">
-            <div class="flex flex-col">`;
-            if (PHONE != phone) {
-              content += `
-                <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `;
-              if (user_pic == "/media/") {
-                content += `border-green-0 border-[2.2px] border-solid `;
-              }
-              content += `"`;
-              if (user_pic != "/media/") {
-                content += `style="background-image: url('${user_pic}');"`;
-              }
-              content += `>`;
-              if (user_pic == "/media/") {
-                content += `${name[0]}`;
-              }
-
-              content += `</div>`;
-            }
-            content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white w-fit rounded-lg `; 
-            if (PHONE == phone) {
-              content += `rounded-tr-none`;
-            } else {
-              content += `rounded-tl-none`;
-            }
-            content += `">`;
-            if (PHONE == phone) {
-              content += `<p class="mr-14 bg-green-0 rounded w-fit py-1 px-1.5 text-slate-900 font-bold mb-2 text-xs">you</p>`;
-            }        
-              content += `<div class="flex items-center justify-center text-slate-900 font-bold text-xs">
-                        <audio class="w-56 xs:w-64 sm:w-72 md:w-80" controls>
-                            <source src="${msg}" type="audio/${data.file_ext}" loading="lazy">
-                        </audio>
-                    </div>
-                </div>
-                <p class="text-gray-300 text-xs text-right">${time}</p>
-            </div>
-          </div>`;
-
-        //append to chat messages at end
-        $("#group-chat-msg").append(content);
-
-        //scroll to bottom
-        location.href = "#end";
-        }else if(msg_type == "doc"){
-          content = `
-            <div class="my-2 w-full flex items-center `;
-            if (PHONE == phone) {
-              content += `justify-end`;
-            }
-            content += `">
-                <div class="flex flex-col">`;
-                    if (PHONE != phone) {
-                      content += `
-                        <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `;
-                      if (user_pic == "/media/") {
-                        content += `border-green-0 border-[2.2px] border-solid `;
-                      }
-                      content += `"`;
-                      if (user_pic != "/media/") {
-                        content += `style="background-image: url('${user_pic}');"`;
-                      }
-                      content += `>`;
-                      if (user_pic == "/media/") {
-                        content += `${name[0]}`;
-                      }
-
-                      content += `</div>`;
-                    }
-              content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md p-2.5 my-1 text-white bg-green-0 w-fit rounded-lg `;
+                  }
+                  content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white bg-green-0 w-fit rounded-lg `; 
                   if (PHONE == phone) {
                     content += `rounded-tr-none`;
                   } else {
@@ -350,49 +265,154 @@ $(document).ready(function () {
                   content += `">`;
                   if (PHONE == phone) {
                     content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
-                  } 
-                        content += `<div class="border-2 rounded p-2.5 w-48 xs:w-56 sm:w-64 md:w-72">
-                            <div class="flex flex-col sm:flex-row items-center justify-evenly text-slate-900 font-bold text-xs">
-                                <div class="flex items-center justify-center mb-1.5 w-14 h-14 sm:mr-3 sm:mb-0">`;
-                                if(data.file_ext == "pdf"){
-                                  content += `<img src="/static/images/icons/pdf.png" alt="${data.file_ext}" class="w-full h-full">`;
-                                }else if(data.file_ext == "doc" || data.file_ext == "docx"){
-                                  content += `<img src="/static/images/icons/doc.png" alt="${data.file_ext}" class="w-full h-full">`;
-                                }else if(data.file_ext == "ppt" || data.file_ext == "pptx"){
-                                  content += `<img src="/static/images/icons/ppt.png" alt="${data.file_ext}" class="w-full h-full">`;
-                                }else{
-                                  content += `<img src="/static/images/icons/txt.png" alt="${data.file_ext}" class="w-full h-full">`;
-                                }
-                                    
-                    content += `</div>
-                                <div class="w-full sm:w-fit">
-                                    <p class="text-white text-sm break-words">${data.file_name}</p>
-                                    <p class="text-xs text-gray-700 mt-1 break-words">${data.file_size.toString().slice(0,4)} MB `;
-                                    if(data.file_ext == "pdf"){
-                                      content += `PDF`;
-                                    }else if(data.file_ext == "doc" || data.file_ext == "docx"){
-                                      content += `MS Word`;
-                                    }else if(data.file_ext == "ppt" || data.file_ext == "pptx"){
-                                      content += `MS Powerpoint`;
-                                    }
-                              content += `Document</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-col sm:flex-row justify-between items-center mb-1 mt-3">
-                                <a href="${msg}" target="_blank" class="py-2.5 px-2 w-full mb-2 sm:mb-0 sm:w-1/2 sm:mr-2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs sm:text-sm">open file</a>
-                                <a href="${msg}" target="_blank" download="${msg}" class="py-2.5 px-2 w-full sm:w-1/2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs sm:text-sm">download</a>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-gray-300 text-xs text-right">${time}</p>
-                </div>
-            </div>`;
+                  }        
+                    content += `<a target="_blank" href="${obj["file_url"]}" class="flex items-center justify-center text-slate-900 font-bold text-xs">
+                              <video class="w-56 xs:w-64 sm:w-72 md:w-80 h-auto" controls>
+                                  <source src="${obj["file_url"]}" type="video/${obj["file_ext"]}" loading="lazy">
+                              </video>
+                          </a>
+                      </div>
+                      <p class="text-gray-300 text-xs text-right">${obj["created_at"]}</p>
+                  </div>
+                </div>`;
+      
+              //append to chat messages at end
+              $("#group-chat-msg").append(content);
+              
+              //scroll to bottom
+              location.href = "#end";
+      
+              }else if(obj_msg_type == "audio"){
+                content = `
+                <div class="my-2 w-full flex items-center `;
+                  if (PHONE == phone) {
+                    content += `justify-end`;
+                  }
+                  content += `">
+                  <div class="flex flex-col">`;
+                  if (PHONE != phone) {
+                    content += `
+                      <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `;
+                    if (user_pic == "/media/") {
+                      content += `border-green-0 border-[2.2px] border-solid `;
+                    }
+                    content += `"`;
+                    if (user_pic != "/media/") {
+                      content += `style="background-image: url('${user_pic}');"`;
+                    }
+                    content += `>`;
+                    if (user_pic == "/media/") {
+                      content += `${name[0]}`;
+                    }
+      
+                    content += `</div>`;
+                  }
+                  content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md py-1.5 my-1 px-2 text-white w-fit rounded-lg `; 
+                  if (PHONE == phone) {
+                    content += `rounded-tr-none`;
+                  } else {
+                    content += `rounded-tl-none`;
+                  }
+                  content += `">`;
+                  if (PHONE == phone) {
+                    content += `<p class="mr-14 bg-green-0 rounded w-fit py-1 px-1.5 text-slate-900 font-bold mb-2 text-xs">you</p>`;
+                  }        
+                    content += `<div class="flex items-center justify-center text-slate-900 font-bold text-xs">
+                              <audio class="w-56 xs:w-64 sm:w-72 md:w-80" controls>
+                                  <source src="${obj["file_url"]}" type="audio/${obj["file_ext"]}" loading="lazy">
+                              </audio>
+                          </div>
+                      </div>
+                      <p class="text-gray-300 text-xs text-right">${obj["created_at"]}</p>
+                  </div>
+                </div>`;
+      
+              //append to chat messages at end
+              $("#group-chat-msg").append(content);
+      
+              //scroll to bottom
+              location.href = "#end";
+              }else if(obj_msg_type == "doc"){
+                content = `
+                  <div class="my-2 w-full flex items-center `;
+                  if (PHONE == phone) {
+                    content += `justify-end`;
+                  }
+                  content += `">
+                      <div class="flex flex-col">`;
+                          if (PHONE != phone) {
+                            content += `
+                              <div class="flex items-center justify-center w-7 h-7 text-white rounded-full bg-cover bg-no-repeat bg-center `;
+                            if (user_pic == "/media/") {
+                              content += `border-green-0 border-[2.2px] border-solid `;
+                            }
+                            content += `"`;
+                            if (user_pic != "/media/") {
+                              content += `style="background-image: url('${user_pic}');"`;
+                            }
+                            content += `>`;
+                            if (user_pic == "/media/") {
+                              content += `${name[0]}`;
+                            }
+      
+                            content += `</div>`;
+                          }
+                    content += `<div class="max-w-[18rem] sm:max-w-sm md:max-w-md p-2.5 my-1 text-white bg-green-0 w-fit rounded-lg `;
+                        if (PHONE == phone) {
+                          content += `rounded-tr-none`;
+                        } else {
+                          content += `rounded-tl-none`;
+                        }
+                        content += `">`;
+                        if (PHONE == phone) {
+                          content += `<p class="mr-14 text-slate-900 font-bold mb-2 text-xs">you</p>`;
+                        } 
+                              content += `<div class="border-2 rounded p-2.5 w-48 xs:w-56 sm:w-64 md:w-72">
+                                  <div class="flex flex-col sm:flex-row items-center justify-evenly text-slate-900 font-bold text-xs">
+                                      <div class="flex items-center justify-center mb-1.5 w-14 h-14 sm:mr-3 sm:mb-0">`;
+                                      if(obj["file_ext"] == "pdf"){
+                                        content += `<img src="/static/images/icons/pdf.png" alt="${obj["file_ext"]}" class="w-full h-full">`;
+                                      }else if(obj["file_ext"] == "doc" || obj["file_ext"] == "docx"){
+                                        content += `<img src="/static/images/icons/doc.png" alt="${obj["file_ext"]}" class="w-full h-full">`;
+                                      }else if(obj["file_ext"] == "ppt" || obj["file_ext"] == "pptx"){
+                                        content += `<img src="/static/images/icons/ppt.png" alt="${obj["file_ext"]}" class="w-full h-full">`;
+                                      }else{
+                                        content += `<img src="/static/images/icons/txt.png" alt="${obj["file_ext"]}" class="w-full h-full">`;
+                                      }
+                                          
+                          content += `</div>
+                                      <div class="w-full sm:w-fit">
+                                          <p class="text-white text-sm break-words">${obj["file_name"]}</p>
+                                          <p class="text-xs text-gray-700 mt-1 break-words">${obj["file_size"].toString().slice(0,4)} MB `;
+                                          if(obj["file_ext"] == "pdf"){
+                                            content += `PDF`;
+                                          }else if(obj["file_ext"] == "doc" || obj["file_ext"] == "docx"){
+                                            content += `MS Word`;
+                                          }else if(obj["file_ext"] == "ppt" || obj["file_ext"] == "pptx"){
+                                            content += `MS Powerpoint`;
+                                          }
+                                    content += `Document</p>
+                                      </div>
+                                  </div>
+                                  <div class="flex flex-col sm:flex-row justify-between items-center mb-1 mt-3">
+                                      <a href="${obj["file_url"]}" target="_blank" class="py-2.5 px-2 w-full mb-2 sm:mb-0 sm:w-1/2 sm:mr-2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs sm:text-sm">open file</a>
+                                      <a href="${obj["file_url"]}" target="_blank" download="${obj["file_url"]}" class="py-2.5 px-2 w-full sm:w-1/2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs sm:text-sm">download</a>
+                                  </div>
+                              </div>
+                          </div>
+                          <p class="text-gray-300 text-xs text-right">${obj["created_at"]}</p>
+                      </div>
+                  </div>`;
+      
+                //append to chat messages at end
+                $("#group-chat-msg").append(content);
+                
+                //scroll to bottom
+                location.href = "#end";
+              }
+            });
 
-          //append to chat messages at end
-          $("#group-chat-msg").append(content);
-          
-          //scroll to bottom
-          location.href = "#end";
+          }
         }
 
       } else if (data.type == "user.list") {
@@ -436,14 +456,25 @@ $(document).ready(function () {
     //handling file msg
     $("#file-msg").click(function (e) {
       $("#file-msg").on("change", function (event) {
-        var fileCount = event.target.files.length;
+          var fileCount = event.target.files.length;
 
-        //show the submit btn only if file is present
-        if (fileCount > 0) {
-          $("#send-file-btn").html("send " + fileCount + " file");
-          $("#send-file-btn").css("display", "flex");
-        }
+          //show the submit btn only if file is present
+          if (fileCount > 0) {
+            $("#select-file-msg-btn").css("display", "none");
+            $("#send-file-btn").html("send " + fileCount + " file");
+            $("#send-file-btn").css("display", "flex");
+            $("#cancel-file-send").css("display", "flex");
+          }
       });
+    });
+
+    
+    //cancel file input
+    $("#cancel-file-send").on("click", function () {
+      $("#cancel-file-send").css("display", "none");
+      $("#send-file-btn").css("display", "none");
+      $("#select-file-msg-btn").css("display", "flex");
+      $("#file-msg").val("");
     });
 
     //sending file data
@@ -465,21 +496,20 @@ $(document).ready(function () {
           let data = response["data"];
           let status = response["status"];
 
-          if (data == null) {
+          if (data.length == 0) {
             $("#popup-message").html("Error : " + data);
             $("#btn-2-box").css("display", "none");
             $("#popup-alert").css("display", "flex");
-          } else if (data != null && error == null && status == 201) {
+          } else if (data.length > 0 && error == null && status == 201) {
             $("#send-file-btn").css("display", "none");
+            $("#cancel-file-send").css("display", "none");
+            $("#select-file-msg-btn").css("display", "flex");
+            
             //sending the data to websocket
             ws.send(
               JSON.stringify({
-                msg_type: data.file_type,
-                msg: data.file_url,
-                file_ext: data.file_ext,
-                file_name: data.file_name,
-                file_size: data.file_size,
-                created_at: data.created_at,
+                msg_type: "file",
+                files: data,
               })
             );
           }

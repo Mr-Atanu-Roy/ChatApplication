@@ -341,46 +341,47 @@ def upload_msg_file(request):
 
     response = {}
     status = 0,
-    data = None,
+    data = [],
     error = "no data"
 
     try:
         if request.method == "POST":
             group_id = request.POST.get("group_id")   #get the group id
-            file = request.FILES.get("file-msg")   #get the file 
+            file = request.FILES.getlist("file-msg")   #get the file 
 
             #get the group
             group = Group.objects.filter(id=group_id).first()
             #check if group exists
             if group is not None:
+                data = []
+                #iterate over all files
+                for f in file:
+                    #get the file extension
+                    file_ext = f.name.split('.')[-1]
+                    #get the file type
+                    file_type = get_file_type(file_ext)
+                    #getting file size in mb
+                    file_size = f.size*0.000001
 
-                #get the file extension
-                file_ext = file.name.split('.')[-1]
-                #get the file type
-                file_type = get_file_type(file_ext)
-                #getting file size in mb
-                file_size = file.size*0.000001
-                
-                #check if file type is not None
-                if file_type != None:
-                    #upload the file
-                    new_msg = ChatMessages.objects.create(sender=request.user, group=group, message_type=file_type, file=file, file_name=file.name, file_size=file_size, file_ext=file_ext)
+                    if file_type != None:
+
+                        #saving to db
+                        new_msg = ChatMessages.objects.create(sender=request.user, group=group, message_type=file_type, file=f, file_name=f.name, file_size=file_size, file_ext=file_ext)
                     
-                    file_url = f"/media/{new_msg.file}"
-                    data = {
-                        "file_type": file_type,
-                        "file_ext": file_ext,
-                        "file_name": file.name,
-                        "file_url": file_url,
-                        "file_size": file_size,
-                        "created_at": new_msg.created_at.strftime("%B %d, %Y, %I:%M %p")
-                    }
-                    error = None
-                    status = 201
+                        file_url = f"/media/{new_msg.file}"
+                        data.append({
+                            "file_type": file_type,
+                            "file_ext": file_ext,
+                            "file_name": f.name,
+                            "file_url": file_url,
+                            "file_size": file_size,
+                            "created_at": new_msg.created_at.strftime("%B %d, %Y, %I:%M %p")
+                        })
                 
-                else:
-                    error = "Invalid file type"
-                    status = 415
+                
+                error = None
+                status = 201
+
             
             else:
                 error = "Invalid request"

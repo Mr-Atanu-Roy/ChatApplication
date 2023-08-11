@@ -123,6 +123,10 @@
     
     </div>
     <div id="end"></div>
+
+    <div id="scroll_to_bottom_btn" class="fixed cursor-pointer rounded w-10 h-10 z-50 bottom-20 bg-dark hover:bg-light-dark transition-colors duration-300 flex items-center justify-center">
+        <span class="text-xl text-white"><i class="fa fa-arrow-down"></i></span>
+    </div>
 </div>
 
 <form class="text-white w-full fixed bg-dark p-2.5 bottom-0 z-40" id="send-msg-form">
@@ -138,13 +142,17 @@
     </div>
 </form>
 <form enctype="multipart/form-data" class="right-20 bottom-3 fixed z-40 flex justify-center items-center" id="file-msg-form">
-    <button type="submit" id="send-file-btn" class="hidden text-white text-sm rounded bg-light-dark py-1 px-2">send</button>
-    <input type="file" id="file-msg" name="file-msg" class="hidden">
-    <label for="file-msg">
-        <div class="text-white w-10 h-10 flex items-center justify-center text-xl cursor-pointer">
+    <button type="submit" id="send-file-btn" class="hidden text-white text-sm rounded bg-light-dark py-1.5 px-2 mr-1.5">send</button>
+    <input type="file" id="file-msg" name="file-msg" class="hidden" multiple>
+    <label for="file-msg" id="select-file-msg-btn">
+        <div class="text-white w-[2.7rem] h-10 flex items-center justify-center text-xl cursor-pointer transition-colors duration-300 hover:bg-light-dark rounded mr-0.5">
             <i class="fa fa-paperclip"></i>
         </div>
     </label>
+    <div id="cancel-file-send" class="hidden text-white w-[2.7rem] h-10 items-center justify-center text-2xl cursor-pointer transition-colors duration-300 hover:bg-light-dark rounded mr-0.5">
+        <i class="fa fa-times"></i>
+    </div>
+
 </form>
 
 {% endblock body %}
