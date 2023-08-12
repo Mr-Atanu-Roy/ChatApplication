@@ -55,7 +55,6 @@ $(document).ready(function () {
           "group_id": GROUP_ID,
         },
         success: function (response) {
-          console.log(response)
           if(response.status == 201 && response.message == "user removed"){
             window.location.href = "/";
           }
@@ -84,7 +83,6 @@ $(document).ready(function () {
           "group_id": GROUP_ID,
         },
         success: function (response) {
-          console.log(response)
           if(response.status == 201 && response.message == "group deleted"){
             window.location.href = "/";
           }

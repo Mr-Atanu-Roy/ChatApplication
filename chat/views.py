@@ -159,12 +159,16 @@ def chat_group_settings(request, id):
     try:
         #get the group instance from id
         group = Group.objects.filter(id=id).first()
-        #get user contacts
-        contacts = get_user_contacts(request.user)
 
         #check if group exists and user is a part of it
         if group is None or request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
+            
+        #get user contacts
+        contacts = get_user_contacts(request.user)
+
+        #getting group media
+        group_media = get_group_messages(group, "text")
         
 
         #form execution for admin only
@@ -224,6 +228,7 @@ def chat_group_settings(request, id):
         pass
 
     context["group"] = group
+    context["group_media"] = group_media
     context["contacts"] = contacts
     
     return render(request, 'chat/group-chat-setting.html', context)
@@ -328,14 +333,18 @@ def chat_personal_settings(request, id):
     is_friends = False
 
     try:
-        group = Group.objects.filter(id=id).first()
         #get the group instance from id
-        #get user contacts
-        contacts = get_user_contacts(request.user)
+        group = Group.objects.filter(id=id).first()
 
         #check if group exists and user is a part of it
         if not group or request.user not in group.members.all():
             return HttpResponse("<h3>INVALID GROUP</h3>")
+        
+        #get user contacts
+        contacts = get_user_contacts(request.user)
+
+        #getting group media
+        group_media = get_group_messages(group, "text")
         
         #getting the other user in group
         other_user = group.members.exclude(pk=request.user.pk).first()
@@ -349,6 +358,7 @@ def chat_personal_settings(request, id):
 
 
     context["group"] = group
+    context["group_media"] = group_media
     context["other_user"] = other_user
     context["is_friends"] = is_friends
 

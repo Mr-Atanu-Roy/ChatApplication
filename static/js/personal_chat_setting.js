@@ -28,7 +28,37 @@ $(document).ready(function () {
           },
         });
       });
-  
+
+
+      //click on remove contact
+      $(document).on("click", "#remove-contact-btn", function () {
+        
+        $("#popup-message").html("Are you sure that you want to remove this contact from your friend list?");
+        $("#popup-alert").css("display", "flex");
+        
+      });
+
+      //remove friend on confirmation
+      $(document).on("click", "#popup-btn-2", function () {
+        let user_phone = $("#other-user-phone").html().trim();
+        $.ajax({
+          type: "get",
+          url: "/api/remove_contact/",
+          data: {
+            "phone": user_phone,
+          },
+          success: function (response) {
+            console.log(response)
+            if(response.status == 204 && response.message==true){
+              $("#btn-2-box").css("display", "none");
+              $("#popup-message").html(`${user_phone} removed from your contact. Reload page to se changes`);
+            }else{
+              $("#btn-2-box").css("display", "none");
+              $("#popup-message").html("Failed to perform this action. Try again later");
+            }
+          }
+        });       
+    });
 
 
     } catch (error) {

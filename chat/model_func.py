@@ -58,7 +58,7 @@ def get_user_group(user):
 
 
 #func to get group messages of group(=Group model instance)
-def get_group_messages(group):
+def get_group_messages(group, exclude=None):
 
     key = f"{group.id}_chat_messages"
     cached_data = cache_get(key)
@@ -71,6 +71,10 @@ def get_group_messages(group):
 
         #set cache
         cache_set(key, group_msg)
+
+    #this will exclude msg of message_type=exclude
+    if exclude in ["text", "img", "audio", "video", "doc"] and group_msg is not None:
+        group_msg = group_msg.exclude(message_type=exclude)
 
     return group_msg
 

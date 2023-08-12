@@ -144,6 +144,66 @@ def add_to_contact(request):
 
 
 @login_required(login_url="/auth/login")
+@csrf_exempt
+def remove_contact(request):
+    '''
+    remove friend from request.user friend list/contact
+    '''
+
+
+    response = {}
+    status = 0,
+    message = False,
+    error = "no data"
+
+    try:
+        #allow only GET method
+        if request.method == "GET":
+            #getting user phone
+            phone = request.GET.get("phone").strip()
+
+            #check if phone is empty
+            if phone != "" and phone != request.user.phone:
+                #get the user instance
+                user = User.objects.filter(phone=phone).first()
+                if user is not None:
+                    #get UserContacts instance of both the users
+                    contacts_user = UserContacts.objects.filter(user=user).first()
+                    contacts_r_user = UserContacts.objects.filter(user=request.user).first()
+
+                    #remove each other from each others contact
+                    contacts_user.contacts.remove(request.user)
+                    contacts_r_user.contacts.remove(user)
+                    contacts_user.save()
+                    contacts_r_user.save()
+
+                    message = True
+                    error = None
+                    status = 204
+                    
+                else:
+                    status = 404
+                    error = "invalid user"
+
+            else:
+                status = 404
+                error = "invalid user"
+        
+        else:
+            error = "only GET method is allowed"
+            status = 405
+    except Exception as e:
+        print(e)
+        pass
+
+    response["status"] = status
+    response["message"] = message
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
+
+
+@login_required(login_url="/auth/login")
 def search_chats(request):
     '''
     Handel dynamic chat searching on chat nav bar

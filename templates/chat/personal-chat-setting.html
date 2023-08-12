@@ -8,7 +8,7 @@
 {% block body %}
 
 <div class="bg-slate-900 w-full h-screen flex items-center justify-center overflow-y-auto py-10">
-    <div id="create-group-form" class="w-full mx-3.5 sm:mx-24 md:w-3/4 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 lg:w-1/2 my-auto overflow-y-auto">
+    <div id="create-group-form" class="w-full mx-3.5 sm:mx-24 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 md:w-2/3 lg:w-3/4 my-auto overflow-y-auto">
         <div>
             <div class="flex flex-col items-center justify-center">
                 <div class="flex flex-col items-center justify-center">
@@ -18,29 +18,88 @@
                 </div>
                 <div class="text-center mt-1">
                     <h3 class="text-white font-bold">{{other_user.first_name}} {{other_user.last_name}}</h3>
-                    <p class="text-gray-500 text-[0.81rem]">{{other_user.phone}}</p>
+                    <p class="text-gray-500 text-[0.81rem]" id="other-user-phone">{{other_user.phone}}</p>
                 </div>
             </div>
 
             <div class="px-3 my-6 flex items-end justify-evenly">
+                {% if is_friends %}
                 <div class="text-center max-w-[135px]">
-                    {% if is_friends %}
-                        <div class="flex justify-center items-center">
-                            <img src="{% static 'images/icons/friends.png' %}" class="mb-1.5 w-12 rounded-full" alt="friends">
-                        </div>
-                        <p class="text-green-0 capitalize text-xs">you both are friends</p>
-                        {% else %}
-                        <div>
-                            <i class="fa fa-user-plus mb-1.5 text-xl text-white hover:text-green-0-dark transition-colors duration-200 cursor-pointer" id="add-contact-btn" data-phone="{{other_user.phone}}"></i>
-                        </div>
-                        <p class="text-green-0 capitalize text-xs">add friend</p>
-                        {% endif %}
+                    <div class="flex justify-center items-center">
+                        <img src="{% static 'images/icons/friends.png' %}" class="mb-1.5 w-12 rounded-full" alt="friends">
+                    </div>
+                    <p class="text-green-0 capitalize text-xs">you both are friends</p>
                 </div>	
+                <div class="text-center max-w-[135px]">
+                    <div>
+                        <i class="fa fa-user-times mb-1.5 text-xl text-red-600 hover:text-red-800 transition-colors duration-200 cursor-pointer" id="remove-contact-btn"></i>
+                    </div>
+                    <p class="text-green-0 capitalize text-xs">remove friend</p>
+                </div>	
+                {% else %}
+                <div class="text-center max-w-[135px]">
+                    <div>
+                        <i class="fa fa-user-plus mb-1.5 text-xl text-white hover:text-green-0-dark transition-colors duration-200 cursor-pointer" id="add-contact-btn" data-phone="{{other_user.phone}}"></i>
+                    </div>
+                    <p class="text-green-0 capitalize text-xs">add friend</p>
+                </div>	
+                {% endif %}
                 <div class="text-center max-w-[145px]">
                     <i class="fa fa-clock-o text-xl text-red-600 mb-1.5"></i>
                     <p class="text-green-0 capitalize text-xs">Conversation Started: {{group.created_at|date:"d.m.y"}}</p>
                 </div>	
             </div>
+
+            <h3 class="mt-8 text-white font-bold mb-3.5 capitalize">Group Media (<span class="text-sm">images, video, documents</span>)</h3>
+            {% if group_media == None %}
+            <p class="text-gray-500 text-xs">Nothing added yet</p>
+            {% else %}
+            <div class="py-4 my-2 overflow-x-auto whitespace-nowrap">
+
+                {% for media in group_media %}
+                    {% if media.message_type == "img" %}
+                    <div class="inline-block mx-2">
+                        <div class="flex items-center rounded justify-center bg-cover bg-no-repeat bg-center h-32 w-60" style="background-image: url('/media/{{media.file}}');">
+                        </div>
+                    </div>
+                    {% elif media.message_type == "video" %}
+                    <div class="inline-block mx-2">
+                        <div class="flex items-center rounded justify-center ">
+                            <video class="rounded h-32" controls="">
+                                <source src="/media/{{media.file}}" type="video/mp4" loading="lazy">
+                            </video>
+                        </div>
+                    </div>
+                    {% elif media.message_type == "doc" %}
+                    <div class="inline-block mx-2">
+                        <div class="rounded bg-light-dark top-15 w-60 h-32 relative -top-8 px-2 py-2.5">
+                            
+                            <div class="flex flex-row items-center justify-evenly text-slate-900 font-bold text-xs">
+                                <div class="flex items-center justify-center mb-1 w-12 h-12 sm:mr-3 sm:mb-0">
+                                    {% if media.file_ext == "pdf" %}
+                                    <img src="{% static 'images/icons/pdf.png' %}" alt="{{media.file_ext}}" class="w-full h-full">
+                                    {% elif media.file_ext == "doc" or media.file_ext == "docx" %}
+                                    <img src="{% static 'images/icons/doc.png' %}" alt="{{media.file_ext}}" class="w-full h-full">
+                                    {% elif media.file_ext == "ppt" or media.file_ext == "pptx" %}
+                                    <img src="{% static 'images/icons/ppt.png' %}" alt="{{media.file_ext}}" class="w-full h-full">
+                                    {% endif %}
+                                </div>
+                                <div class="w-full sm:w-fit">
+                                    <p class="text-white text-xs break-words">{{media.file_name}}</p>
+                                    <p class="text-[0.68rem] text-gray-700 mt-1 break-words">{{media.file_size |slice:"4"}} MB {% if media.file_ext == "pdf" %}PDF {% elif media.file_ext == "doc" or media.file_ext == "docx" %}MS Word {% elif media.file_ext == "ppt" or media.file_ext == "pptx" %}MS Powerpoint {% endif %} Document</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-row justify-between items-center mb-1 mt-3">
+                                <a href="/media/{{media.file}}" target="_blank" class="py-2.5 px-2 mb-0 w-1/2 mr-2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs">open file</a>
+                                <a href="/media/{{media.file}}" target="_blank" download="/media/{{media.file}}" class="py-2.5 px-2 w-1/2 text-center uppercase text-white rounded transition-colors duration-300 bg-gray-700 hover:bg-gray-800 text-xs">download</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                
+            </div>
+            {% endif %}
 
         </div>
 
