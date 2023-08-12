@@ -11,10 +11,8 @@
         <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center"
             style="background-image: url('/media/{{group.group_pic}}');"></div>
         <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
-            <p class="font-bold text-lg">{{group.name}}</p>
-            <p class="font-bold text-xs text-gray-500" id="online-users">
-                {% if group.description != "" %}{{group.description}}{% endif %}
-            </p>
+            <p class="font-bold text-lg transition-all duration-200">{{group.name}}</p>
+            <p class="font-bold text-xs text-gray-500" id="online-users"></p>
         </div>
     </a>
 </div>
@@ -196,8 +194,10 @@
             <i class="fa fa-paperclip"></i>
         </div>
     </label>
-    <div id="cancel-file-send" class="hidden text-white w-[2.7rem] h-10 items-center justify-center text-2xl cursor-pointer transition-colors duration-300 hover:bg-light-dark rounded mr-0.5">
-        <i class="fa fa-times"></i>
+    <div id="cancel-file-send" class="hidden">
+        <div class="text-white w-[2.7rem] flex h-10 items-center justify-center text-2xl cursor-pointer transition-colors duration-300 hover:bg-light-dark rounded mr-0.5">
+            <i class="fa fa-times"></i>
+        </div>
     </div>
 </form>
 
@@ -206,6 +206,11 @@
 {% block scripts %}
 {{group.id|json_script:"group_name"}}
 {{request.user.phone|json_script:"current_user_phone"}}
+{% if group.description != "" %}
+    {{group.description|json_script:"group_desc"}}
+    {% else %}
+    {{""|json_script:"group_desc"}}
+{% endif %}
 
 <script src="{% static 'js/group_chat.js' %}"></script>
 {% endblock scripts %}

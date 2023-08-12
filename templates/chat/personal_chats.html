@@ -14,10 +14,8 @@
             {% endif %}
         >{% if other_user.profile_pic == '' %}{{other_user.first_name|slice:":1"}}{% endif %}</div>
         <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
-            <p class="font-bold text-lg">{{other_user.first_name}} {{other_user.last_name}}</p>
-            <p class="font-bold text-xs text-gray-500" id="online-users">
-                {{other_user.phone}}
-            </p>
+            <p class="font-bold text-lg transition-all duration-200">{{other_user.first_name}} {{other_user.last_name}}</p>
+            <p class="font-bold text-xs text-gray-500 hidden" id="online-users"></p>
         </div>
     </a>
 </div>
@@ -149,8 +147,11 @@
             <i class="fa fa-paperclip"></i>
         </div>
     </label>
-    <div id="cancel-file-send" class="hidden text-white w-[2.7rem] h-10 items-center justify-center text-2xl cursor-pointer transition-colors duration-300 hover:bg-light-dark rounded mr-0.5">
-        <i class="fa fa-times"></i>
+
+    <div id="cancel-file-send" class="hidden">
+        <div class="text-white w-[2.7rem] flex h-10 items-center justify-center text-2xl cursor-pointer transition-colors duration-300 hover:bg-light-dark rounded mr-0.5">
+            <i class="fa fa-times"></i>
+        </div>
     </div>
 
 </form>
@@ -160,6 +161,7 @@
 {% block scripts %}
 {{group.id|json_script:"group_name"}}
 {{user.phone|json_script:"current_user_phone"}}
+{{other_user.phone|json_script:"other_user_phone"}}
 
 <script src="{% static 'js/personal_chat.js' %}"></script>
 {% endblock scripts %}

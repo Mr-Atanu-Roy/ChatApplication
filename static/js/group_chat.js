@@ -1,6 +1,24 @@
+//getting current user phone
+const PHONE = JSON.parse(
+  document.getElementById("current_user_phone").textContent
+);
+
+//getting the group id
+const GROUP_NAME = JSON.parse(
+  document.getElementById("group_name").textContent
+);
+
+//getting the group desc
+const GROUP_DESC = JSON.parse(
+  document.getElementById("group_desc").textContent
+);
+
+
 // func to set header in chat
-function set_header(content) {
+function set_header(content=GROUP_DESC) {
+  $("#online-users").css("display", "none");
   $("#online-users").html(content);
+  $("#online-users").fadeIn();
 }
 
 // func to set online user
@@ -19,16 +37,14 @@ function user_join(name, phone, user_phone) {
 
   let content = ``;
 
-  if (phone == user_phone) {
-    content = `You joined now...`;
-  } else {
+  if (phone != user_phone) {
     content = `${name} joined now...`;
   }
   set_header(content);
 
   setTimeout(function () {
     online();
-  }, 2500);
+  }, 3000);
 }
 
 //func for handling user leave task for other user
@@ -42,7 +58,7 @@ function user_leave(name) {
 
   setTimeout(function () {
     online();
-  }, 2500);
+  }, 3000);
 }
 
 //func for handling user join task for self
@@ -62,11 +78,16 @@ function user_list(online_users_num = 0, users) {
 
   setTimeout(function () {
     online();
-  }, 2500);
+  }, 3000);
 }
 
 $(document).ready(function () {
   try {
+    
+    //setting the header to show group desc when page loaded
+    set_header();
+
+
     //scroll to bottom
     location.href = "#end";
 
@@ -75,15 +96,6 @@ $(document).ready(function () {
         location.href = "#end";            
     });
 
-    //getting current user phone
-    const PHONE = JSON.parse(
-      document.getElementById("current_user_phone").textContent
-    );
-
-    //getting the group id
-    const GROUP_NAME = JSON.parse(
-      document.getElementById("group_name").textContent
-    );
 
     //creating a websocket con to: /api/chat/group/<group-name>/
     const ws = new WebSocket(
@@ -460,10 +472,10 @@ $(document).ready(function () {
 
           //show the submit btn only if file is present
           if (fileCount > 0) {
-            $("#select-file-msg-btn").css("display", "none");
+            $("#select-file-msg-btn").fadeOut(55);
             $("#send-file-btn").html("send " + fileCount + " file");
-            $("#send-file-btn").css("display", "flex");
-            $("#cancel-file-send").css("display", "flex");
+            $("#send-file-btn").fadeIn();
+            $("#cancel-file-send").fadeIn();
           }
       });
     });
@@ -471,9 +483,9 @@ $(document).ready(function () {
     
     //cancel file input
     $("#cancel-file-send").on("click", function () {
-      $("#cancel-file-send").css("display", "none");
-      $("#send-file-btn").css("display", "none");
-      $("#select-file-msg-btn").css("display", "flex");
+      $("#cancel-file-send").fadeOut(55);
+      $("#send-file-btn").fadeOut(55);
+      $("#select-file-msg-btn").fadeIn();
       $("#file-msg").val("");
     });
 
@@ -501,9 +513,9 @@ $(document).ready(function () {
             $("#btn-2-box").css("display", "none");
             $("#popup-alert").css("display", "flex");
           } else if (data.length > 0 && error == null && status == 201) {
-            $("#send-file-btn").css("display", "none");
-            $("#cancel-file-send").css("display", "none");
-            $("#select-file-msg-btn").css("display", "flex");
+            $("#send-file-btn").fadeOut(55);
+            $("#cancel-file-send").fadeOut(55);
+            $("#select-file-msg-btn").fadeIn();
             
             //sending the data to websocket
             ws.send(
