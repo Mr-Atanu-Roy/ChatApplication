@@ -85,34 +85,65 @@ function fetch_all_friend_requests() {
             let content = ``;
             
             if(status == 200 && data != null){
-                for (let index = 0; index < data.length; index++) {
-                    content += `
-                    <div class="w-full flex items-start justify-start p-2.5">
-                        <div class="w-12">
-                            <img class="w-full" src="/static/images/icons/bot.png" alt="bot" loading="lazy">
+                console.log(response)
+                if(notification_type == "send"){
+                    for (let index = 0; index < data.length; index++) {
+                        content += `
+                        <div class="w-full flex items-start justify-start p-2.5">
+                            <a href="/chat/personal/p/${data[index].request_for__id}" class="w-12">
+                                <img class="w-full" src="/static/images/icons/bot.png" alt="bot" loading="lazy">
+                            </a>
+                            <div class="ml-4 w-full">
+                                <p class="text-white text-sm mb-2">You have send a friend request to ${data[index].request_for__first_name} ${data[index].request_for__last_name}</p>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-gray-500 text-xs text-right">${format_date(data[index].created_at)}</p>
+                                    <div class="flex items-start justify-between">`;
+                                        if(data[index].status == true && data[index].seen == true){
+                                            content += `<button class="text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">accepted</button>
+                                            <div class="flex items-start justify-between">`;
+                                        }else if(data[index].status == false && data[index].seen == true){
+                                            content += `<button class="mr-2.5 text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">declined</button>`;
+                                        }else{
+                                            content += `<button class="mr-2.5 text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">pending</button>`;
+                                        }
+                            content += `</div>
+                            </div>
+                            </div>
+                            </div>
                         </div>
-                        <div class="ml-4 w-full">
-                            <p class="text-white text-sm mb-2">${data[index].message}</p>
-                            <div class="flex items-center justify-between">
-                                <p class="text-gray-500 text-xs text-right">${format_date(data[index].created_at)}</p>
-                                <div class="flex items-start justify-between">`;
-                                    if(data[index].status == true && data[index].seen == true){
-                                        content += `<button class="text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">accepted</button>
-                                        <div class="flex items-start justify-between">`;
-                                    }else if(data[index].status == false && data[index].seen == true){
-                                        content += `<button class="mr-2.5 text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">declined</button>`;
-                                    }else{
-                                        content += `<div class="flex items-start justify-between">
-                                        <button id="accept-request" class="mr-4 text-white font-semibold py-1 px-3 rounded transition-colors capitalize duration-300 bg-green-0 hover:bg-green-0-dark" data-id="${data[index].id}">Accept</button>
-                                        <button id="decline-request" class="text-white font-semibold py-1 px-3 rounded transition-colors duration-300 capitalize bg-red-600 hover:bg-red-700" data-id="${data[index].id}">Decline</button>
-                                        </div>`;
-                                    }
-                        content += `</div>
+                        `;                
+                    }
+
+                }else{
+                    for (let index = 0; index < data.length; index++) {
+                        content += `
+                        <div class="w-full flex items-start justify-start p-2.5">
+                            <a href="/chat/personal/p/${data[index].request_for__id}" class="w-12">
+                                <img class="w-full" src="/static/images/icons/bot.png" alt="bot" loading="lazy">
+                            </a>
+                            <div class="ml-4 w-full">
+                                <p class="text-white text-sm mb-2">You have a new friend request from ${data[index].request_from__first_name} ${data[index].request_from__last_name}</p>
+                                <div class="flex items-center justify-between">
+                                    <p class="text-gray-500 text-xs text-right">${format_date(data[index].created_at)}</p>
+                                    <div class="flex items-start justify-between">`;
+                                        if(data[index].status == true && data[index].seen == true){
+                                            content += `<button class="text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">accepted</button>
+                                            <div class="flex items-start justify-between">`;
+                                        }else if(data[index].status == false && data[index].seen == true){
+                                            content += `<button class="mr-2.5 text-white font-semibold py-1 px-3 rounded bg-light-dark capitalize">declined</button>`;
+                                        }else{
+                                            content += `<div class="flex items-start justify-between">
+                                            <button id="accept-request" class="mr-4 text-white font-semibold py-1 px-3 rounded transition-colors capitalize duration-300 bg-green-0 hover:bg-green-0-dark" data-id="${data[index].id}">Accept</button>
+                                            <button id="decline-request" class="text-white font-semibold py-1 px-3 rounded transition-colors duration-300 capitalize bg-red-600 hover:bg-red-700" data-id="${data[index].id}">Decline</button>
+                                            </div>`;
+                                        }
+                            content += `</div>
+                            </div>
+                            </div>
+                            </div>
                         </div>
-                        </div>
-                        </div>
-                    </div>
-                    `;                
+                        `;                
+                    }
                 }
 
                 $("#notifications").html(content);

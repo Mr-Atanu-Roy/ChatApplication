@@ -527,7 +527,7 @@ def load_friend_requests(request):
             notification_type = request.GET.get("notification_type", "received")
 
             #get all the notifications
-            friend_requests = get_friend_requests(request.user, type=notification_type).values("id", "created_at", "status", "message", "seen")[::-1]
+            friend_requests = get_friend_requests(request.user, type=notification_type).values("id", "created_at", "status", "seen", "request_from__first_name", "request_from__last_name", "request_for__first_name", "request_for__last_name", "request_from__id", "request_for__id")[::-1]
 
             #if no friend_requests exists return this
             if len(friend_requests) == 0:

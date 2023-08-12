@@ -47,8 +47,8 @@ def UserContact_update_handler(sender, instance, created, *args, **kwargs):
 @receiver(post_save, sender=FriendRequests)
 def FriendRequest_create_update_handler(sender, instance, created, *args, **kwargs):
     '''
-    This signal will add a notification instance whenever someone sends a friend request and update the message field of current FriendRequest instance
-
+    This signal will add a notification instance whenever someone sends a friend request 
+    
     It will also add the contact to users contact if the user accepts the friend request and will send a notification to user who send the friend request
     '''
 
@@ -61,10 +61,6 @@ def FriendRequest_create_update_handler(sender, instance, created, *args, **kwar
 
         #updating message field
         msg = f"You have a new friend request from: {instance.request_for.first_name} {instance.request_for.last_name}"
-
-        #set the message field of created FriendRequests instance
-        instance.message = msg
-        instance.save()
 
         #create a notification instance
         new_notification = Notification(
