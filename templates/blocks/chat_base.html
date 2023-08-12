@@ -34,7 +34,7 @@
                         <div class="flex flex-col">
                             <a href="{% url 'new-chat-group' %}" class="mb-2 text-xl hover:text-green-0 transition-colors {% if request.path == '/new-chat/group/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-users"></i></a>
 
-                            <a href="{% url 'contacts' %}" class="mb-1 text-[1.35rem] hover:text-green-0 transition-colors {% if request.path == '/contacts/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-volume-control-phone"></i></a>
+                            <a href="{% url 'contacts' %}" class="mb-1 text-[1.35rem] hover:text-green-0 transition-colors {% if request.path == '/friends/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-volume-control-phone"></i></a>
 
                             <a href="{% url 'notifications' %}" class="mb-1 text-xl hover:text-green-0 transition-colors {% if request.path == '/notifications/' %} text-green-0 {% else %} text-white {% endif %}"><i class="fa fa-bell"></i></a>
                           
