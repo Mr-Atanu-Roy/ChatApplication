@@ -8,7 +8,7 @@
 {% block body %}
 
 <div class="bg-slate-900 w-full h-screen flex items-center justify-center overflow-y-auto py-10">
-    <form {% if request.user == group.owner %}method="post" action="" enctype="multipart/form-data"{%endif%} id="create-group-form" class="w-full mx-3.5 sm:mx-24 lg:mx-0 bg-dark rounded-lg shadow-lg p-10 md:w-2/3 lg:w-3/4 my-auto overflow-y-auto">
+    <form {% if request.user == group.owner %}method="post" action="" enctype="multipart/form-data"{%endif%} id="create-group-form" class="w-full px-5 py-7 mx-3.5 sm:mx-24 lg:mx-0 bg-dark rounded-lg shadow-lg sm:p-10 md:w-2/3 lg:w-3/4 my-auto overflow-y-auto">
         {% if request.user == group.owner %}
         {% csrf_token %}
         {%endif%} 
@@ -142,28 +142,29 @@
             {% if request.user == group.owner %}
             
             {% for contact in contacts %}
-            
-            <div class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" id="user-search-contact-box">
-                <label data-ripple-dark="true" for="{{contact.phone}}" class="grid grid-cols-6 place-items-center">
-                    <div class="text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if contact.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if contact.profile_pic != '' %} style="background-image: url('/media/{{contact.profile_pic}}');" {% endif %}>
+            <div class="py-2.5 sm:px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
+                <label data-ripple-dark="true" for="{{contact.phone}}" class="w-full flex items-center justify-start">
+                    <div class="mr-2.5 sm:mr-3.5 text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if contact.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if contact.profile_pic != '' %} style="background-image: url('/media/{{contact.profile_pic}}');" {% endif %}>
                         {% if contact.profile_pic == '' %} {{contact.first_name|slice:":1"}} {% endif %}
                     </div>
-                    <div class="ml-4 col-span-5 w-full overflow-hidden text-white">
-                        <p class="font-bold text-lg">{{contact.first_name}} {{contact.last_name}}</p>
-                        <p class="font-bold text-xs text-gray-400" id="user-search-contact-phone">{{contact.phone}}</p>
+                    <div>
+                        <p class="font-bold text-md sm:text-lg text-white">{{contact.first_name}} {{contact.last_name}}</p>
+                        <p class="font-bold text-xs text-gray-400">
+                            {{contact.phone}} 
+                        </p>
                     </div>
                 </label>
-
-                <input value="{{contact.phone}}" name="phone_checkbox" type="checkbox" class="phone-checkbox rounded-full h-6 w-6 border-2 border-green-0-dark before:content[''] peer relative cursor-pointer appearance-none border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-0 checked:bg-green-0 checked:before:bg-green-0 hover:before:opacity-10" id="{{contact.phone}}" {% if contact in group.members.all %} checked {% endif %}>
                 
+                <input value="{{contact.phone}}" name="phone_checkbox" type="checkbox" class="phone-checkbox rounded-full h-6 w-6 border-2 border-green-0-dark before:content[''] peer relative cursor-pointer appearance-none border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-10 before:w-10 sm:before:h-12 sm:before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-green-0 checked:bg-green-0 checked:before:bg-green-0 hover:before:opacity-10" id="{{contact.phone}}" {% if contact in group.members.all %} checked {% endif %}>
             </div>
+            
             {% endfor %}
 
             {% else %}
             {% for member in group.members.all %}
-            <div class="py-2.5 px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
+            <div class="py-2.5 sm:px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
                 <a {% if request.user != member %}href="/chat/personal/p/{{member.id}}"{% endif %} class="w-full flex items-center justify-start">
-                    <div class="mr-3.5 text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if member.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if member.profile_pic != '' %} style="background-image: url('/media/{{member.profile_pic}}');" {% endif %}>
+                    <div class="mr-2.5 sm:mr-3.5 text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if member.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if member.profile_pic != '' %} style="background-image: url('/media/{{member.profile_pic}}');" {% endif %}>
                         {% if member.profile_pic == '' %} {{member.first_name|slice:":1"}} {% endif %}
                     </div>
                     <div>

@@ -29,18 +29,22 @@
         <div class="mt-10 max-h-64  overflow-y-auto">
             <h3 class="text-white font-bold mb-3.5 capitalize">My Friends</h3>
             {% if contacts.count == 0 %}
-              <p class="text-white font-bold text-sm px-1.5">Your friends will appear here</p>
+              <p class="text-white font-bold text-sm px-1.5">Your friends will appear here after you add friends</p>
             {% else %}
             {% for contact in contacts %}
-            <a href="/chat/personal/p/{{contact.id}}" class="py-2.5 px-2 grid grid-cols-6 place-items-center hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
-                <div class="text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if contact.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if contact.profile_pic != '' %} style="background-image: url('/media/{{contact.profile_pic}}');" {% endif %}>
-                    {% if contact.profile_pic == '' %} {{contact.first_name|slice:":1"}} {% endif %}
-                </div>
-                <div class="ml-2.5 col-span-5 w-full overflow-hidden text-white">
-                    <p class="font-bold text-lg">{{contact.first_name}} {{contact.last_name}}</p>
-                    <p class="font-bold text-xs text-gray-400">{{contact.phone}}</p>
-                </div>
-            </a>
+            <div class="py-2.5 sm:px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
+                <a {% if request.user != contact %}href="/chat/personal/p/{{contact.id}}"{% endif %} class="w-full flex items-center justify-start">
+                    <div class="mr-2.5 sm:mr-3.5 text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center {% if contact.profile_pic == '' %} border-green-0 border-[3.1px] border-solid {% endif %}" {% if contact.profile_pic != '' %} style="background-image: url('/media/{{contact.profile_pic}}');" {% endif %}>
+                        {% if contact.profile_pic == '' %} {{contact.first_name|slice:":1"}} {% endif %}
+                    </div>
+                    <div>
+                        <p class="font-bold text-lg text-white">{{contact.first_name}} {{contact.last_name}}</p>
+                        <p class="font-bold text-xs text-gray-400">
+                            {{contact.phone}} 
+                        </p>
+                    </div>
+                </a>
+            </div>
             {% endfor %}
             {% endif %}
             

@@ -26,26 +26,31 @@ $(document).ready(function () {
                         if(error == null && status == 200){
                             for (let index = data.length - 1; index >= 0; index--) {
                                 content += `
-                                <a href="${data[index]["url"]}"
-                                    class="mx-1.5 md:mx-3.5 lg:mx-0 p-3 grid grid-cols-6 place-items-center hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
-                                    <div class="col-span-1 overflow-hidden w-14 h-14 rounded-full bg-cover bg-no-repeat bg-center text-white text-3xl flex items-center justify-center `;
-                                    if(data[index]["chat_pic"].includes("media/None")){
-                                        content += ` border-green-0 border-[3.1px] border-solid`;
-                                    }
-                                    content += `" `;
-                                    if(!data[index]["chat_pic"].includes("media/None")){
-                                     content += `style="background-image: url('${data[index]["chat_pic"]}');"`;
-                                    }
-                                    content += `>`;
-                                    if(data[index]["chat_pic"].includes("media/None")){
-                                        content += `${data[index]["name"][0]}`;
-                                    }
-                                    content += `</div>
-                                    <div class="ml-3.5 lg:ml-3 col-span-5 w-full overflow-hidden text-white pl-3.5 lg:pl-5 2xl:p-0">
-                                        <p class="font-bold text-lg">${data[index]["name"]}</p>
-                                        <p class="font-bold text-xs text-gray-400">${data[index]["desc"] == null ? "" : data[index]["desc"]}</p>
-                                    </div>
-                                </a>`;
+                                <div class="py-2 sm:px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
+                                    <a href="${data[index]["url"]}" class="w-full flex items-center justify-start">
+                                        <div class="mr-2.5 sm:mr-3.5 text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center `;
+                                        if(data[index]["chat_pic"].includes("media/None")){
+                                            content += `border-green-0 border-[3.1px] border-solid">
+                                            ${data[index]["name"][0]}`;
+                                        }else{
+                                            content += `" style="background-image: url('${data[index]["chat_pic"]}');">`;
+                                        }
+                                        content += `
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-lg text-white">${data[index]["name"].length > 24 ? data[index]["name"].substring(0, 24)+'...' : data[index]["name"]}</p>
+                                            <p class="font-bold text-xs text-gray-400">`;
+                                                if(data[index]["desc"] != null){
+                                                    if(data[index]["desc"].length > 45){
+                                                        data[index]["desc"].substring(0, 45)+'...';
+                                                    }else{
+                                                        data[index]["desc"];
+                                                    }
+                                                }
+                                            content += `</p>
+                                        </div>
+                                    </a>
+                                </div>`;
                             }
                         }else if(status == 204 && error == "nothing found"){
                             content += `<p class="pl-4 capitalize text-white text-sm font-bold">${error}</p>`;

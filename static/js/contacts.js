@@ -19,22 +19,27 @@ $(document).ready(function () {
 
           if (error == null && status == 200) {
             content = `
-                <div class="py-2.5 px-2 grid grid-cols-6 place-items-center hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded" id="user-search-contact-box">
-                    <div class="text-white text-3xl from-bold col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center `;
-                  if (data["profile_pic"] == null) {
-                    content += `border-green-0 border-[3px] border-solid`;
-                  }
-                  content += `" style="background-image: url('${data["profile_pic"]}');">`;
-                  if (data["profile_pic"] == null) {
-                    content += `<span class="uppercase">${data["name"][0]}</span>`;
-                  }
-                  content += `</div>
-                    <div class="ml-2.5 col-span-5 w-full overflow-hidden text-white">
-                        <p class="font-bold text-lg">${data["name"]}</p>
-                        <p class="font-bold text-xs text-gray-400" id="user-search-contact-phone">${data["phone"]}</p>
+                <div class="py-2.5 sm:px-2 flex items-center justify-between hover:bg-light-dark transition-colors duration-300 cursor-pointer rounded">
+                    <div class="w-full flex items-center justify-start">
+                        <div class="mr-2.5 sm:mr-3.5 text-white text-3xl col-span-1 overflow-hidden w-16 h-16 rounded-full bg-cover bg-no-repeat bg-center flex items-center justify-center `;
+                          if (data["profile_pic"] == null) {
+                            content += `border-green-0 border-[3.1px] border-solid">`;
+                          }else{
+                            content += `" style="background-image: url('${data["profile_pic"]}');">`;
+                          }
+                          if (data["profile_pic"] == null) {
+                            content += `${data["name"][0]}`;
+                          }
+                          content += `
+                        </div>
+                        <div>
+                            <p class="font-bold text-lg text-white">${data["name"]}</p>
+                            <p class="font-bold text-xs text-gray-400">
+                                ${data["phone"]}
+                            </p>
+                        </div>
                     </div>
-                </div>
-                `;
+                </div>`;
           } else if (status == 404 || status == 400) {
             content = `
                 <div class="py-2 px-1.5">
