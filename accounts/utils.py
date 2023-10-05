@@ -31,29 +31,33 @@ def humanize_date(date_time, date_only=False):
     This func will humanize the given date-time. If date is smaller than 2 days it returns yesterday. If date_only=True then it will return only date
     '''
 
-    date = date_time.strftime("%d.%m.%Y, %I:%M %p")
-    try:
+    if date_time is not None:
 
-        one_day_ago = current_time - datetime.timedelta(days=1)
-        two_days_ago = current_time - datetime.timedelta(days=2)
+        date = date_time.strftime("%d.%m.%Y, %I:%M %p")
+        try:
 
-        if date_time < one_day_ago and date_time > two_days_ago:
-            date = "yesterday"
-        
-        elif date_time > one_day_ago:
-            date = humanize.naturaltime(date_time)
-        
-        else:
-            if date_only == True:
-                date = date_time.strftime("%d.%m.%Y")
+            one_day_ago = current_time - datetime.timedelta(days=1)
+            two_days_ago = current_time - datetime.timedelta(days=2)
+
+            if date_time < one_day_ago and date_time > two_days_ago:
+                date = "yesterday"
+            
+            elif date_time > one_day_ago:
+                date = humanize.naturaltime(date_time)
+            
             else:
-                date = date_time.strftime("%d.%m.%Y, %I:%M %p")
-        
+                if date_only == True:
+                    date = date_time.strftime("%d.%m.%Y")
+                else:
+                    date = date_time.strftime("%d.%m.%Y, %I:%M %p")
+            
 
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
 
-    return date
+        return date
+    
+    return None
 
 
 #base/abstract model for other models
