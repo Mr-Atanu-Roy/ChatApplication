@@ -40,12 +40,17 @@ function fetch_all_notification() {
                         img = "person";
                     }
                     content += `
-                    <div class="w-full flex items-start justify-start px-2 py-4">
+                    <div class="notification-box w-full flex items-start justify-start px-2 py-4">
                         <div class="w-12">
                             <img class="w-full" src="/static/images/icons/${img}.png" alt="${img}" loading="lazy">
                         </div>
                         <div class="ml-4 w-full">
-                            <p class="text-white text-sm mb-1.5">${data[index].message}</p>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <p class="text-white text-sm">${data[index].message}</p>
+                                <div data-id="${data[index].id}" class="delete-notification-btn bg-red-200 hover:bg-red-300 transition-colors cursor-pointer rounded-[0.18rem] flex items-center justify-center p-1.5">
+                                    <i class="fa fa-trash text-red-800"></i>
+                                </div>
+                            </div>
                             <p class="text-gray-500 text-xs text-right">${format_date(data[index].created_at)}</p>
                         </div>
                     </div>
@@ -226,6 +231,9 @@ $(document).ready(function () {
                         let content = `<p class="text-xs text-gray-500">something went wrong</p>`;
                         parent.html(content);
                     }
+                },
+                error: function (response) {
+                    alert("something went wrong. Try again later...");
                 }
             });
         });
@@ -251,6 +259,32 @@ $(document).ready(function () {
                         let content = `<p class="text-xs text-gray-500">something went wrong</p>`;
                         parent.html(content);
                     }
+                },
+                error: function (response) {
+                    alert("something went wrong. Try again later...");
+                }
+            });
+        });
+
+        //DELETE NOTIFICATION
+        $(document).on("click", ".delete-notification-btn", function () {
+            let id = $(this).data("id");
+
+            $.ajax({
+                type: "post",
+                url: "/api/notifications/delete/",
+                data: {notification_id: id},
+                success: function (response) {
+                    let status = response.status;
+                    let error = response.error;
+                    let data = response.data;
+
+                    if(data["deleted"] == true && status == 204 && error == null){
+                        fetch_all_notification();
+                    }
+                },
+                error: function (response) {
+                    alert("something went wrong. Try again later...");
                 }
             });
         });
@@ -261,4 +295,4 @@ $(document).ready(function () {
       console.log("error: ".error);
     }
 });
-  
+
