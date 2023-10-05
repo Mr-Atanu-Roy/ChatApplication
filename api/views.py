@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
-from accounts.models import User, UserContacts, FriendRequests
+from accounts.models import User, UserContacts, FriendRequests, Notification
 from chat.models import Group, ChatMessages
 
 from accounts.utils import check_str_special, get_file_type
@@ -679,4 +679,62 @@ def decline_friend_requests(request):
     return JsonResponse(response, safe=False)
 
 
+
+@csrf_exempt
+@login_required(login_url="/auth/login")
+def delete_notification(request):
+    '''
+    Delete friend requests of user
+    '''
+
+    response = {}
+    status = 0,
+    data = {
+        "deleted": False
+    }
+    error = "no data"
+
+    try:
+        # allow only POST request 
+        if request.method == "POST":
+            #get the id of notification
+            notification_id = request.POST.get("notification_id").strip()
+
+            #validating notification
+            if notification_id is not None and notification_id != "":
+                #getting the notification instance
+                notification = Notification.objects.filter(id=notification_id).first()
+
+                #check if notification exist
+                if notification is not None:
+                    notification.delete()
+
+                    status = 204
+                    error = None
+                    data = {
+                        "deleted": True
+                    }
+
+                else:
+                    status = 400
+                    error = "Invalid request"
+
+            else:
+                status = 400
+                error = "request_id is required"
+
+        else:
+            status = 405
+            error = "only POST method is allowed"
+
+
+    except Exception as e:
+        print(e)
+        pass
+    
+    response["status"] = status
+    response["data"] = data
+    response["error"] = error
+
+    return JsonResponse(response, safe=False)
 
