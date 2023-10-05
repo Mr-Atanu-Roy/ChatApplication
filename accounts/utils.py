@@ -8,6 +8,8 @@ from django.conf import settings
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.core.cache import cache
 
+from django.contrib.humanize.templatetags import humanize
+
 import uuid
 import datetime
 import pytz
@@ -22,6 +24,36 @@ tz = pytz.timezone(settings.TIME_ZONE)
 
 # Get the current time in the timezone
 current_time = datetime.datetime.now(tz)
+
+#func to humanize date
+def humanize_date(date_time, date_only=False):
+    '''
+    This func will humanize the given date-time. If date is smaller than 2 days it returns yesterday. If date_only=True then it will return only date
+    '''
+
+    date = date_time.strftime("%d.%m.%Y, %I:%M %p")
+    try:
+
+        one_day_ago = current_time - datetime.timedelta(days=1)
+        two_days_ago = current_time - datetime.timedelta(days=2)
+
+        if date_time < one_day_ago and date_time > two_days_ago:
+            date = "yesterday"
+        
+        elif date_time > one_day_ago:
+            date = humanize.naturaltime(date_time)
+        
+        else:
+            if date_only == True:
+                date = date_time.strftime("%d.%m.%Y")
+            else:
+                date = date_time.strftime("%d.%m.%Y, %I:%M %p")
+        
+
+    except Exception as e:
+        print(e)
+
+    return date
 
 
 #base/abstract model for other models

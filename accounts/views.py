@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import auth
 from django.contrib import messages
+from django.http import JsonResponse
 
 from accounts.models import User
 from accounts.utils import current_time, check_str_special, validate_email
@@ -140,6 +141,21 @@ def logout(request):
     auth.logout(request)  
     messages.warning(request, "You are logged out now")  
     return redirect('login')
+
+
+
+#update last seen
+@login_required(login_url="/auth/login")
+def last_seen(request):
+    try:
+        request.user.last_seen = current_time
+        request.user.save()
+
+    except Exception as e:
+        print(e)
+        return JsonResponse(e, safe=False)
+    
+    return JsonResponse("Done", safe=False)
 
 
 

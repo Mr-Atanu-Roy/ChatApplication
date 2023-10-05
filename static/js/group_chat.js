@@ -533,6 +533,12 @@ $(document).ready(function () {
     ws.onclose = function (event) {
       console.log("Connection closed unexpectedly...");
     };
+
+    //close the websocket when user leaves the page
+    window.addEventListener("beforeunload", function (event) {
+      ws.close();
+    });
+    
   } catch (error) {
     console.log(error);
   }
