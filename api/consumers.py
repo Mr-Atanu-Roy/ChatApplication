@@ -3,6 +3,7 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from asgiref.sync import async_to_sync
 
 from chat.models import Group, ChatMessages
+from accounts.utils import humanize_date
 
 
 class GroupChatConsumer(JsonWebsocketConsumer):
@@ -82,6 +83,7 @@ class GroupChatConsumer(JsonWebsocketConsumer):
                 new_chat = ChatMessages.objects.create(group=self.group_obj, sender=self.user, message=msg)
                 new_chat.save()
                 chat_time = new_chat.created_at.strftime("%B %d, %Y, %I:%M %p")
+                
 
                 async_to_sync(self.channel_layer.group_send)(self.group_name, {
                     "type": "chat.message",
@@ -188,7 +190,7 @@ class PersonalChatConsumer(JsonWebsocketConsumer):
         try:
             if len(online_users) == 0:
                 other_user = self.group_obj.members.exclude(pk=self.user.pk).first()
-                last_seen = other_user.last_login.strftime("%B %d, %Y, %I:%M %p")
+                last_seen = humanize_date(other_user.last_seen, date_only=True)
         except Exception as e:
             print(e) 
             pass
@@ -274,7 +276,7 @@ class PersonalChatConsumer(JsonWebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(self.group_name, {
             "type": "user.leave",
             "phone": self.user.phone,
-            "last_seen": self.user.last_login.strftime("%B %d, %Y, %I:%M %p")
+            "last_seen": humanize_date(self.user.last_seen, date_only=True)
         })
         
         #removing channel from group

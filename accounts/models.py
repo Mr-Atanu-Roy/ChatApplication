@@ -30,6 +30,7 @@ class User(AbstractUser):
     email = models.EmailField(blank=True, null=True, default="")
     profile_pic = models.FileField(max_length=355, blank=True, null=True, upload_to="profile_pic/")
     last_logout = models.DateTimeField(null=True, blank=True)
+    last_seen = models.DateTimeField(null=True, blank=True)
     
     objects = Usermanager()
     

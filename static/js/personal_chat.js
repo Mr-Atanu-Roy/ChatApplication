@@ -309,6 +309,7 @@ $(document).ready(function () {
                 //new user joins and other user get notified about it
                 user_join(data.phone, PHONE);
             } else if (data.type == "user.leave") {
+                console.log(data);
                 //new user joins and other user get notified about it
                 user_leave(data.phone, PHONE, data.last_seen);
             } else {
@@ -389,6 +390,11 @@ $(document).ready(function () {
         ws.onclose = function (event) {
             console.log("Connection closed unexpectedly...");
         };
+
+        //close the websocket when user leaves the page
+        window.addEventListener("beforeunload", function (event) {
+            ws.close();
+        });
   
 
     } catch (error) {

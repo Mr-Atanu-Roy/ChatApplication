@@ -21,7 +21,7 @@ class UserAdmin(admin.ModelAdmin):
         }),
         ("More Details", {
             "fields": (
-                ['date_joined', 'last_login', 'last_logout']
+                ['date_joined', 'last_seen', 'last_login', 'last_logout']
             ), 'classes': ['collapse']
         }),
         ("Permissions", {
